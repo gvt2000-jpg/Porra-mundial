@@ -34,7 +34,8 @@ export default function AdminGate({ children }) {
         <button
           type="button"
           onClick={logout}
-          style={{ position: 'fixed', top: 16, right: 16, zIndex: 10, padding: '10px 14px', borderRadius: 8, border: '1px solid #d1d5db', background: '#fff', cursor: 'pointer', fontWeight: 700 }}
+          className="ghost-link"
+          style={{ position: 'fixed', top: 16, right: 16, zIndex: 20, background: '#fff' }}
         >
           Salir admin
         </button>
@@ -44,19 +45,24 @@ export default function AdminGate({ children }) {
   }
 
   return (
-    <main style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 24, background: '#f3f4f6' }}>
-      <form onSubmit={submit} style={{ width: '100%', maxWidth: 380, padding: 28, background: '#fff', borderRadius: 12, boxShadow: '0 12px 30px rgba(0,0,0,0.08)' }}>
-        <h1 style={{ marginTop: 0, marginBottom: 8, fontSize: 28 }}>Admin</h1>
-        <p style={{ marginTop: 0, marginBottom: 20, color: '#6b7280' }}>Introduce la contraseña para continuar.</p>
+    <main className="page" style={{ display: 'grid', placeItems: 'center' }}>
+      <form onSubmit={submit} className="form-card" style={{ maxWidth: 400 }}>
+        <div className="brand-mark" style={{ marginBottom: 22 }}>
+          <span className="brand-dot">26</span>
+          <span>Admin Porra</span>
+        </div>
+        <h1 style={{ margin: '0 0 8px', fontSize: 32, fontWeight: 950 }}>Acceso privado</h1>
+        <p className="muted" style={{ marginTop: 0, lineHeight: 1.55 }}>Introduce la contraseña para gestionar partidos, rojas y puntuaciones.</p>
         <input
+          className="input"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoFocus
-          style={{ width: '100%', boxSizing: 'border-box', padding: '12px 14px', border: '2px solid #e5e7eb', borderRadius: 10, fontSize: 16, marginBottom: 12 }}
+          style={{ marginBottom: 12 }}
         />
-        {error && <p style={{ margin: '0 0 12px', color: '#b91c1c', fontWeight: 600 }}>{error}</p>}
-        <button type="submit" style={{ width: '100%', padding: '12px 16px', border: 0, borderRadius: 10, background: '#4f46e5', color: '#fff', fontWeight: 800, cursor: 'pointer' }}>
+        {error && <p className="alert alert-error">{error}</p>}
+        <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
           Entrar
         </button>
       </form>

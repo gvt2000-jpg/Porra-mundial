@@ -25,14 +25,8 @@ export default function MatchDetail() {
       .catch((err) => setError(err.message))
   }, [id])
 
-  const pageStyle = { minHeight: '100vh', background: '#f3f4f6', padding: '36px 24px' }
-  const wrapStyle = { maxWidth: 1040, margin: '0 auto' }
-  const panelStyle = { background: '#fff', borderRadius: 10, padding: 20, marginBottom: 18, boxShadow: '0 6px 18px rgba(15,23,42,0.06)' }
-  const teamStyle = { display: 'grid', placeItems: 'center', gap: 8, textAlign: 'center' }
-  const listRowStyle = { padding: '10px 0', borderBottom: '1px solid #eef2f7' }
-
-  if (error) return <main style={pageStyle}><div style={wrapStyle}><p style={panelStyle}>Error: {error}</p></div></main>
-  if (!data) return <main style={pageStyle}><div style={wrapStyle}>Cargando partido...</div></main>
+  if (error) return <main className="page"><div className="shell"><p className="alert alert-error">Error: {error}</p></div></main>
+  if (!data) return <main className="page"><div className="shell"><div className="panel">Cargando partido...</div></div></main>
 
   const { match } = data
   const tiedKnockout = match.played &&
@@ -45,63 +39,71 @@ export default function MatchDetail() {
       : null
 
   return (
-    <main style={pageStyle}>
-      <div style={wrapStyle}>
-        <a href="/tournament" style={{ color: '#1d4ed8', fontWeight: 800, textDecoration: 'none' }}>← Volver al torneo</a>
+    <main className="page">
+      <div className="shell">
+        <nav className="top-nav">
+          <a className="brand-mark" href="/"><span className="brand-dot">26</span><span>Porra Mundial</span></a>
+          <div className="nav-links">
+            <a className="nav-link" href="/tournament">Torneo</a>
+            <a className="nav-link" href="/leaderboard">Ranking</a>
+          </div>
+        </nav>
 
-        <section style={{ ...panelStyle, marginTop: 18 }}>
-          <div style={{ color: '#6b7280', fontWeight: 800, marginBottom: 18 }}>{match.stage} · {match.starts_at ? new Date(match.starts_at).toLocaleString('es-ES') : 'Fecha por definir'}</div>
+        <section className="panel" style={{ marginBottom: 18 }}>
+          <div className="muted" style={{ fontWeight: 900, marginBottom: 18 }}>
+            {match.stage} · {match.starts_at ? new Date(match.starts_at).toLocaleString('es-ES') : 'Fecha por definir'}
+          </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 20, alignItems: 'center' }}>
-            <div style={teamStyle}>
-              <div style={{ fontSize: 58 }}>{match.home_team?.flag}</div>
-              <h1 style={{ margin: 0, fontSize: 28 }}>{match.home_team?.name || 'Local'}</h1>
-            </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 46, fontWeight: 950 }}>{match.played ? `${match.home_score ?? 0} - ${match.away_score ?? 0}` : 'vs'}</div>
-              <div style={{ color: '#6b7280', fontWeight: 800 }}>{match.played ? 'Jugado' : 'Pendiente'}</div>
+              <div style={{ fontSize: 58 }}>{match.home_team?.flag}</div>
+              <h1 style={{ margin: 0, fontSize: 30 }}>{match.home_team?.name || 'Local'}</h1>
+            </div>
+            <div style={{ textAlign: 'center', minWidth: 160 }}>
+              <div style={{ fontSize: 54, fontWeight: 950 }}>{match.played ? `${match.home_score ?? 0} - ${match.away_score ?? 0}` : 'vs'}</div>
+              <div className="muted" style={{ fontWeight: 900 }}>{match.played ? 'Jugado' : 'Pendiente'}</div>
               {tiedKnockout && (
-                <div style={{ marginTop: 8, color: winnerTeam ? '#0f766e' : '#b91c1c', fontWeight: 900 }}>
-                  {winnerTeam ? `Pasa ${winnerTeam.flag} ${winnerTeam.name}` : 'Falta seleccionar quien paso'}
+                <div style={{ marginTop: 8, color: winnerTeam ? 'var(--brand)' : 'var(--danger)', fontWeight: 950 }}>
+                  {winnerTeam ? `Pasa ${winnerTeam.flag} ${winnerTeam.name}` : 'Falta seleccionar quién pasó'}
                 </div>
               )}
             </div>
-            <div style={teamStyle}>
+            <div style={{ textAlign: 'center' }}>
               <div style={{ fontSize: 58 }}>{match.away_team?.flag}</div>
-              <h1 style={{ margin: 0, fontSize: 28 }}>{match.away_team?.name || 'Visitante'}</h1>
+              <h1 style={{ margin: 0, fontSize: 30 }}>{match.away_team?.name || 'Visitante'}</h1>
             </div>
           </div>
         </section>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 18 }}>
-          <section style={panelStyle}>
-            <h2 style={{ marginTop: 0 }}>Eventos</h2>
-            {data.events.length === 0 && <p style={{ color: '#6b7280' }}>Sin eventos registrados.</p>}
+        <div className="split-grid">
+          <section className="panel">
+            <h2>Eventos</h2>
+            {data.events.length === 0 && <p className="muted">Sin eventos registrados.</p>}
             {data.events.map((event) => (
-              <div key={event.id} style={listRowStyle}>
+              <div key={event.id} style={{ padding: '10px 0', borderBottom: '1px solid #eef2f7' }}>
                 <strong>{event.minute ? `${event.minute}'` : '--'} · {eventLabels[event.event_type] || event.event_type}</strong>
-                <div>{event.flag} {event.team_name}{event.player_name ? ` · ${event.player_name}` : ''}</div>
+                <div className="muted">{event.flag} {event.team_name}{event.player_name ? ` · ${event.player_name}` : ''}</div>
               </div>
             ))}
           </section>
 
-          <section style={panelStyle}>
-            <h2 style={{ marginTop: 0 }}>Impacto en equipos</h2>
+          <section className="panel">
+            <h2>Impacto en equipos</h2>
             {data.team_points.map((team) => (
-              <div key={team.team_id} style={listRowStyle}>
+              <div key={team.team_id} style={{ padding: '10px 0', borderBottom: '1px solid #eef2f7' }}>
                 <strong>{team.flag} {team.team_name}</strong>
-                <div style={{ color: '#1d4ed8', fontWeight: 900 }}>{team.points} puntos de equipo</div>
+                <div style={{ color: 'var(--accent)', fontWeight: 950 }}>{team.points} puntos de equipo</div>
               </div>
             ))}
           </section>
         </div>
 
-        <section style={panelStyle}>
-          <h2 style={{ marginTop: 0 }}>Porras afectadas</h2>
-          {data.impacted_participants.length === 0 && <p style={{ color: '#6b7280' }}>Nadie tiene estos equipos en su Top10.</p>}
+        <section className="panel" style={{ marginTop: 18 }}>
+          <h2>Porras afectadas</h2>
+          {data.impacted_participants.length === 0 && <p className="muted">Nadie tiene estos equipos en su Top10.</p>}
           {data.impacted_participants.slice(0, 20).map((row) => (
-            <div key={row.submitter} style={listRowStyle}>
+            <div key={row.submitter} style={{ padding: '10px 0', borderBottom: '1px solid #eef2f7' }}>
               <strong>{row.submitter}</strong>
-              <div style={{ color: '#6b7280' }}>
+              <div className="muted">
                 {row.teams.map((team) => `${team.flag} ${team.team_name} (#${team.rank}, x${team.multiplier})`).join(' · ')}
               </div>
             </div>

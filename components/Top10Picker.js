@@ -16,6 +16,7 @@ export default function Top10Picker({ onSubmit, locked = false }) {
   }, [])
 
   const selectedTeamIds = useMemo(() => new Set(teamIds.filter(Boolean)), [teamIds])
+  const progress = selectedTeamIds.size
 
   function handleTeamIdChange(i, value) {
     const copy = [...teamIds]
@@ -47,39 +48,44 @@ export default function Top10Picker({ onSubmit, locked = false }) {
   }
 
   const disabled = locked || loading || teams.length === 0
-  const formStyle = { maxWidth: 720, margin: '0 auto', padding: 32, background: '#ffffff', borderRadius: 12, boxShadow: '0 16px 40px rgba(0,0,0,0.1)' }
-  const rowStyle = { display: 'grid', gridTemplateColumns: '80px 1fr', gap: 12, alignItems: 'center', marginBottom: 16 }
-  const labelStyle = { fontWeight: 700, fontSize: 15, color: '#1f2937' }
-  const inputStyle = { width: '100%', padding: '12px 14px', borderRadius: 10, border: '2px solid #e5e7eb', fontSize: 16, fontFamily: 'inherit', boxSizing: 'border-box' }
-  const buttonStyle = { padding: '14px 28px', borderRadius: 10, background: '#4f46e5', color: '#fff', border: 'none', cursor: disabled ? 'not-allowed' : 'pointer', fontWeight: 800, fontSize: 16, width: '100%', opacity: disabled ? 0.55 : 1 }
-  const errorStyle = { color: '#991b1b', marginBottom: 16, padding: 12, background: '#fee2e2', borderRadius: 10, fontSize: 14, fontWeight: 600 }
-  const messageStyle = { marginBottom: 16, padding: 12, background: '#dbeafe', borderRadius: 10, fontSize: 14, color: '#1e40af' }
 
   return (
-    <form onSubmit={submit} style={formStyle}>
-      <div style={rowStyle}>
-        <label style={labelStyle}>Tu nombre</label>
+    <form onSubmit={submit} className="form-card" style={{ maxWidth: 780 }}>
+      <div className="field-row">
+        <label className="label">Tu nombre</label>
         <input
+          className="input"
           value={submitter}
           onChange={(e) => setSubmitter(e.target.value)}
           placeholder="Nombre público"
           disabled={locked}
-          style={inputStyle}
         />
       </div>
-      {loading && <p style={messageStyle}>Cargando equipos oficiales...</p>}
-      {locked && <p style={errorStyle}>Predicciones cerradas. Ya puedes seguir el ranking y comparar participantes.</p>}
-      {error && <p style={errorStyle}>{error}</p>}
-      {!loading && teams.length === 0 && <p style={messageStyle}>No hay equipos cargados. Importa equipos desde el panel admin.</p>}
-      <div style={{ display: 'grid', gap: 12, marginBottom: 24 }}>
+
+      <div style={{ margin: '18px 0 20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginBottom: 8, fontWeight: 850 }}>
+          <span>Equipos seleccionados</span>
+          <span>{progress}/10</span>
+        </div>
+        <div style={{ height: 8, background: '#eef2f7', borderRadius: 999, overflow: 'hidden' }}>
+          <div style={{ width: `${progress * 10}%`, height: '100%', background: 'linear-gradient(135deg, var(--brand), var(--accent))' }} />
+        </div>
+      </div>
+
+      {loading && <p className="alert alert-info">Cargando equipos oficiales...</p>}
+      {locked && <p className="alert alert-error">Predicciones cerradas. Ya puedes seguir el ranking y comparar participantes.</p>}
+      {error && <p className="alert alert-error">{error}</p>}
+      {!loading && teams.length === 0 && <p className="alert alert-info">No hay equipos cargados. Importa equipos desde el panel admin.</p>}
+
+      <div style={{ display: 'grid', gap: 10, marginBottom: 22 }}>
         {Array.from({ length: 10 }, (_, i) => (
-          <div key={i} style={rowStyle}>
-            <div style={{ ...labelStyle, fontSize: 18, color: '#4f46e5' }}>#{i + 1}</div>
+          <div key={i} className="field-row">
+            <div className="label" style={{ color: 'var(--accent)' }}>#{i + 1}</div>
             <select
+              className="select"
               value={teamIds[i]}
               onChange={(e) => handleTeamIdChange(i, e.target.value)}
               disabled={disabled}
-              style={{ ...inputStyle, cursor: disabled ? 'not-allowed' : 'pointer' }}
             >
               <option value="">Selecciona un equipo...</option>
               {teams.map((team) => (
@@ -91,7 +97,8 @@ export default function Top10Picker({ onSubmit, locked = false }) {
           </div>
         ))}
       </div>
-      <button type="submit" disabled={disabled} style={buttonStyle}>
+
+      <button type="submit" disabled={disabled} className="btn btn-primary" style={{ width: '100%', opacity: disabled ? 0.58 : 1 }}>
         Guardar mi Top10
       </button>
     </form>

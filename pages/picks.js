@@ -27,20 +27,31 @@ export default function Picks() {
   const ok = status && status.startsWith('Guardado')
 
   return (
-    <main style={{ padding: '48px 24px', minHeight: '100vh', background: 'linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%)' }}>
-      <div style={{ maxWidth: 840, margin: '0 auto' }}>
-        <header style={{ marginBottom: 32, textAlign: 'center' }}>
-          <h1 style={{ fontSize: 44, fontWeight: 900, marginBottom: 12, color: '#1f2937' }}>Elige tu Top10</h1>
-          <p style={{ fontSize: 18, color: '#6b7280', lineHeight: 1.6 }}>
-            Selecciona los 10 equipos que crees que tendrán mejor desempeño en el torneo.
+    <main className="page">
+      <div className="shell">
+        <nav className="top-nav">
+          <a className="brand-mark" href="/"><span className="brand-dot">26</span><span>Porra Mundial</span></a>
+          <div className="nav-links">
+            <a className="nav-link" href="/leaderboard">Ranking</a>
+            <a className="nav-link" href="/tournament">Torneo</a>
+            <a className="nav-link" href="/compare">Comparar</a>
+          </div>
+        </nav>
+
+        <header style={{ maxWidth: 820, margin: '0 auto 24px', textAlign: 'center' }}>
+          <p className="eyebrow" style={{ color: 'var(--brand)' }}>Predicciones</p>
+          <h1 className="page-title">Elige tu Top10</h1>
+          <p className="page-copy" style={{ marginLeft: 'auto', marginRight: 'auto' }}>
+            Ordena las selecciones que crees que van a sumar más. Cuanto más arriba las pongas, más multiplican.
           </p>
-          <p style={{ display: 'inline-block', marginTop: 10, padding: '10px 14px', borderRadius: 8, background: lock.locked ? '#fee2e2' : '#ecfdf5', color: lock.locked ? '#991b1b' : '#166534', fontWeight: 800 }}>
+          <p className={`alert ${lock.locked ? 'alert-error' : 'alert-success'}`} style={{ display: 'inline-block', marginTop: 16 }}>
             Cierre de predicciones: {lock.lock_label}
           </p>
         </header>
+
         <Top10Picker onSubmit={handleSubmit} locked={lock.locked} />
         {status && (
-          <div style={{ marginTop: 24, padding: 20, borderRadius: 12, background: ok ? '#dcfce7' : '#fee2e2', color: ok ? '#166534' : '#991b1b', fontSize: 16, fontWeight: 700 }}>
+          <div className={`alert ${ok ? 'alert-success' : 'alert-error'}`} style={{ maxWidth: 780, margin: '22px auto 0' }}>
             {status}
           </div>
         )}

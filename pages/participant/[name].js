@@ -16,77 +16,82 @@ export default function ParticipantDetail() {
   const leaderPickIds = new Set((leader?.breakdown || []).map((pick) => pick.team_id))
   const differential = (current?.breakdown || []).filter((pick) => !leaderPickIds.has(pick.team_id))
 
-  const pageStyle = { minHeight: '100vh', background: '#f3f4f6', padding: '36px 24px' }
-  const wrapStyle = { maxWidth: 980, margin: '0 auto' }
-  const panelStyle = { background: '#fff', borderRadius: 10, padding: 20, marginBottom: 18, boxShadow: '0 6px 18px rgba(15,23,42,0.06)' }
-  const gridStyle = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 18 }
-  const statStyle = { ...panelStyle, marginBottom: 0 }
-  const rowStyle = { display: 'grid', gridTemplateColumns: '70px 1fr 80px 90px 90px', gap: 12, alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #eef2f7' }
+  if (!leaderboard) {
+    return <main className="page"><div className="shell"><div className="panel">Cargando participante...</div></div></main>
+  }
 
-  if (!leaderboard) return <main style={pageStyle}><div style={wrapStyle}>Cargando participante...</div></main>
   if (!current) {
     return (
-      <main style={pageStyle}>
-        <div style={wrapStyle}>
-          <a href="/leaderboard">← Volver al ranking</a>
-          <div style={panelStyle}>No encuentro a este participante.</div>
+      <main className="page">
+        <div className="shell">
+          <a className="ghost-link" href="/leaderboard">Volver al ranking</a>
+          <div className="panel" style={{ marginTop: 16 }}>No encuentro a este participante.</div>
         </div>
       </main>
     )
   }
 
   return (
-    <main style={pageStyle}>
-      <div style={wrapStyle}>
-        <a href="/leaderboard" style={{ color: '#1d4ed8', fontWeight: 800, textDecoration: 'none' }}>← Volver al ranking</a>
-        <h1 style={{ fontSize: 40, margin: '18px 0 8px' }}>{current.submitter}</h1>
-        <p style={{ color: '#6b7280', marginTop: 0 }}>Detalle de predicción, multiplicadores y distancia con la cabeza.</p>
+    <main className="page">
+      <div className="shell">
+        <nav className="top-nav">
+          <a className="brand-mark" href="/"><span className="brand-dot">26</span><span>Porra Mundial</span></a>
+          <div className="nav-links">
+            <a className="nav-link" href="/leaderboard">Ranking</a>
+            <a className="nav-link" href="/compare">Comparar</a>
+            <a className="nav-link" href="/tournament">Torneo</a>
+          </div>
+        </nav>
 
-        <div style={gridStyle}>
-          <div style={statStyle}>
-            <div style={{ color: '#6b7280', fontWeight: 700 }}>Posición</div>
-            <div style={{ fontSize: 30, fontWeight: 950 }}>#{current.rank}</div>
-          </div>
-          <div style={statStyle}>
-            <div style={{ color: '#6b7280', fontWeight: 700 }}>Total</div>
-            <div style={{ fontSize: 30, fontWeight: 950, color: '#1d4ed8' }}>{current.total.toFixed(1)}</div>
-          </div>
-          <div style={statStyle}>
-            <div style={{ color: '#6b7280', fontWeight: 700 }}>Al líder</div>
-            <div style={{ fontSize: 30, fontWeight: 950 }}>{leader ? (leader.total - current.total).toFixed(1) : '0.0'}</div>
-          </div>
-          <div style={statStyle}>
-            <div style={{ color: '#6b7280', fontWeight: 700 }}>Siguiente objetivo</div>
-            <div style={{ fontSize: 30, fontWeight: 950 }}>{previous ? (previous.total - current.total).toFixed(1) : '0.0'}</div>
-          </div>
-        </div>
+        <header style={{ marginBottom: 20 }}>
+          <p className="eyebrow" style={{ color: 'var(--brand)' }}>Participante</p>
+          <h1 className="page-title">{current.submitter}</h1>
+          <p className="page-copy">Detalle de predicción, multiplicadores y distancia con la cabeza.</p>
+        </header>
 
-        <div style={panelStyle}>
-          <h2 style={{ marginTop: 0 }}>Top10</h2>
-          <div style={{ ...rowStyle, fontWeight: 900, color: '#6b7280' }}>
-            <span>Rank</span><span>Equipo</span><span>Mult</span><span>Equipo pts</span><span>Aporta</span>
-          </div>
-          {current.breakdown.map((pick) => (
-            <div key={pick.team_id} style={rowStyle}>
-              <strong>#{pick.rank}</strong>
-              <span>{pick.flag} {pick.team_name}</span>
-              <span>x{pick.multiplier}</span>
-              <span>{pick.team_points}</span>
-              <strong style={{ color: '#1d4ed8' }}>{pick.contributed.toFixed(1)}</strong>
-            </div>
-          ))}
-        </div>
+        <section className="stat-grid" style={{ marginBottom: 16 }}>
+          <div className="stat"><div className="stat-label">Posición</div><div className="stat-value">#{current.rank}</div></div>
+          <div className="stat"><div className="stat-label">Total</div><div className="stat-value" style={{ color: 'var(--accent)' }}>{current.total.toFixed(1)}</div></div>
+          <div className="stat"><div className="stat-label">Al líder</div><div className="stat-value">{leader ? (leader.total - current.total).toFixed(1) : '0.0'}</div></div>
+          <div className="stat"><div className="stat-label">Siguiente objetivo</div><div className="stat-value">{previous ? (previous.total - current.total).toFixed(1) : '0.0'}</div></div>
+        </section>
 
-        <div style={panelStyle}>
-          <h2 style={{ marginTop: 0 }}>Diferenciales contra el líder</h2>
-          {current.rank === 1 && <p>Este participante lidera la porra.</p>}
-          {current.rank !== 1 && differential.length === 0 && <p>No tiene equipos diferenciales contra el líder.</p>}
+        <section className="panel" style={{ marginBottom: 16 }}>
+          <div className="section-head">
+            <h2 className="section-title">Top10</h2>
+            <a className="ghost-link" href="/leaderboard">Ranking completo</a>
+          </div>
+          <div className="table-wrap">
+            <table className="data-table">
+              <thead>
+                <tr><th>Rank</th><th>Equipo</th><th>Mult</th><th>Equipo pts</th><th>Aporta</th></tr>
+              </thead>
+              <tbody>
+                {current.breakdown.map((pick) => (
+                  <tr key={pick.team_id}>
+                    <td><strong>#{pick.rank}</strong></td>
+                    <td>{pick.flag} {pick.team_name}</td>
+                    <td>x{pick.multiplier}</td>
+                    <td>{pick.team_points}</td>
+                    <td><strong style={{ color: 'var(--accent)' }}>{pick.contributed.toFixed(1)}</strong></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="panel">
+          <h2>Diferenciales contra el líder</h2>
+          {current.rank === 1 && <p className="muted">Este participante lidera la porra.</p>}
+          {current.rank !== 1 && differential.length === 0 && <p className="muted">No tiene equipos diferenciales contra el líder.</p>}
           {differential.map((pick) => (
-            <div key={pick.team_id} style={{ padding: '8px 0', borderBottom: '1px solid #eef2f7' }}>
-              <strong>{pick.flag} {pick.team_name}</strong> puede recortar si suma puntos: x{pick.multiplier} para {current.submitter}.
+            <div key={pick.team_id} style={{ padding: '10px 0', borderBottom: '1px solid #eef2f7' }}>
+              <strong>{pick.flag} {pick.team_name}</strong>
+              <div className="muted">Puede recortar si suma puntos: x{pick.multiplier} para {current.submitter}.</div>
             </div>
           ))}
-        </div>
+        </section>
       </div>
     </main>
   )
