@@ -1,0 +1,30 @@
+Error: Cannot find module 'C:\Users\Sheibert\Porra\.next\server\pages\picks.js'
+Require stack:
+- C:\Users\Sheibert\Porra\node_modules\next\dist\server\require.js
+- C:\Users\Sheibert\Porra\node_modules\next\dist\server\next-server.js
+- C:\Users\Sheibert\Porra\node_modules\next\dist\server\next.js
+- C:\Users\Sheibert\Porra\node_modules\next\dist\server\lib\start-server.js
+- C:\Users\Sheibert\Porra\node_modules\next\dist\cli\next-start.js
+- C:\Users\Sheibert\Porra\node_modules\next\dist\lib\commands.js
+- C:\Users\Sheibert\Porra\node_modules\next\dist\bin\next
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1421:15)
+    at C:\Users\Sheibert\Porra\node_modules\next\dist\server\require-hook.js:54:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)
+    at Module._load (node:internal/modules/cjs/loader:1227:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1504:12)
+    at mod.require (C:\Users\Sheibert\Porra\node_modules\next\dist\server\require-hook.js:64:28)
+    at require (node:internal/modules/helpers:152:16) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Sheibert\\Porra\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Sheibert\\Porra\\node_modules\\next\\dist\\server\\next-server.js',
+    'C:\\Users\\Sheibert\\Porra\\node_modules\\next\\dist\\server\\next.js',
+    'C:\\Users\\Sheibert\\Porra\\node_modules\\next\\dist\\server\\lib\\start-server.js',
+    'C:\\Users\\Sheibert\\Porra\\node_modules\\next\\dist\\cli\\next-start.js',
+    'C:\\Users\\Sheibert\\Porra\\node_modules\\next\\dist\\lib\\commands.js',
+    'C:\\Users\\Sheibert\\Porra\\node_modules\\next\\dist\\bin\\next'
+  ]
+}
