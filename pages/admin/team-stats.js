@@ -56,6 +56,11 @@ export default function TeamStats() {
         passed_group: updated.passed_group,
         group_finish_position: updated.group_finish_position,
         phases_advanced: updated.phases_advanced,
+        reached_round_of_32: updated.reached_round_of_32,
+        reached_round_of_16: updated.reached_round_of_16,
+        reached_quarter_final: updated.reached_quarter_final,
+        reached_semi_final: updated.reached_semi_final,
+        reached_final: updated.reached_final,
         finalist: updated.finalist,
         third_place: updated.third_place,
         champion: updated.champion
@@ -117,8 +122,11 @@ export default function TeamStats() {
               <tr>
                 <th style={headerCellStyle}>Equipo</th>
                 <th style={headerCellStyle}>Puesto grupo</th>
-                <th style={headerCellStyle}>Fases superadas</th>
-                <th style={headerCellStyle}>Finalista</th>
+                <th style={headerCellStyle}>16vos</th>
+                <th style={headerCellStyle}>8vos</th>
+                <th style={headerCellStyle}>Cuartos</th>
+                <th style={headerCellStyle}>Semis</th>
+                <th style={headerCellStyle}>Final</th>
                 <th style={headerCellStyle}>Tercer lugar</th>
                 <th style={headerCellStyle}>Campeon</th>
               </tr>
@@ -135,8 +143,11 @@ export default function TeamStats() {
                       <option value="3">3º (+1)</option>
                     </select>
                   </td>
-                  <td style={cellStyle}><input type="number" min="0" value={team.phases_advanced || 0} onChange={(e) => updateTeamStat(team.id, 'phases_advanced', e.target.value)} style={inputStyle} /></td>
-                  <td style={cellStyle}><input type="checkbox" checked={Boolean(team.finalist)} onChange={(e) => updateTeamStat(team.id, 'finalist', e.target.checked)} /></td>
+                  <td style={cellStyle}><input type="checkbox" checked={Boolean(team.reached_round_of_32)} onChange={(e) => updateTeamStat(team.id, 'reached_round_of_32', e.target.checked)} /></td>
+                  <td style={cellStyle}><input type="checkbox" checked={Boolean(team.reached_round_of_16)} onChange={(e) => updateTeamStat(team.id, 'reached_round_of_16', e.target.checked)} /></td>
+                  <td style={cellStyle}><input type="checkbox" checked={Boolean(team.reached_quarter_final)} onChange={(e) => updateTeamStat(team.id, 'reached_quarter_final', e.target.checked)} /></td>
+                  <td style={cellStyle}><input type="checkbox" checked={Boolean(team.reached_semi_final)} onChange={(e) => updateTeamStat(team.id, 'reached_semi_final', e.target.checked)} /></td>
+                  <td style={cellStyle}><input type="checkbox" checked={Boolean(team.reached_final)} onChange={(e) => updateTeamStat(team.id, 'reached_final', e.target.checked)} /></td>
                   <td style={cellStyle}><input type="checkbox" checked={Boolean(team.third_place)} onChange={(e) => updateTeamStat(team.id, 'third_place', e.target.checked)} /></td>
                   <td style={cellStyle}><input type="checkbox" checked={Boolean(team.champion)} onChange={(e) => updateTeamStat(team.id, 'champion', e.target.checked)} /></td>
                 </tr>

@@ -4,7 +4,8 @@ const navItems = [
   ['Predicciones', '/picks'],
   ['Ranking', '/leaderboard'],
   ['Torneo', '/tournament'],
-  ['Comparar', '/compare']
+  ['Comparar', '/compare'],
+  ['Admin', '/admin']
 ]
 
 const scoringRows = [
@@ -16,8 +17,11 @@ const scoringRows = [
   ['1º de grupo', SCORING_RULES.groupWinner],
   ['2º de grupo', SCORING_RULES.groupRunnerUp],
   ['3º clasificado', SCORING_RULES.groupThird],
-  ['Pasar de fase', SCORING_RULES.phaseAdvanced],
-  ['Finalista', SCORING_RULES.finalist],
+  ['Llegar a 16vos', SCORING_RULES.reachRoundOf32],
+  ['Llegar a 8vos', SCORING_RULES.reachRoundOf16],
+  ['Llegar a cuartos', SCORING_RULES.reachQuarterFinal],
+  ['Llegar a semis', SCORING_RULES.reachSemiFinal],
+  ['Llegar a la final', SCORING_RULES.reachFinal],
   ['Tercer puesto', SCORING_RULES.thirdPlace],
   ['Campeón', SCORING_RULES.champion]
 ]
@@ -72,6 +76,7 @@ export default function Home() {
               </div>
             </div>
             <a className="ghost-link" href="/tournament">Ver grupos y bracket</a>
+            <a className="ghost-link" href="/admin">Admin</a>
           </aside>
         </section>
 

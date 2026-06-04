@@ -9,6 +9,11 @@ export default function AdminDashboard() {
       primary: true
     },
     {
+      title: 'Predicciones',
+      desc: 'Revisa envios por participante y borra duplicados o nombres mal escritos.',
+      href: '/admin/predictions'
+    },
+    {
       title: 'Eventos avanzados',
       desc: 'Registra otros eventos de partido cuando necesites detalle extra fuera de las rojas del panel principal.',
       href: '/admin/events'
