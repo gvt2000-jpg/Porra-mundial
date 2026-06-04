@@ -1,3 +1,5 @@
+import { SCORING_RULES } from '../lib/scoring'
+
 const navItems = [
   ['Predicciones', '/picks'],
   ['Ranking', '/leaderboard'],
@@ -5,12 +7,24 @@ const navItems = [
   ['Comparar', '/compare']
 ]
 
-const features = [
-  ['Top10 con multiplicadores', 'Cada participante ordena sus diez selecciones. El primer puesto multiplica por 10 y el décimo por 1.'],
-  ['Ranking vivo', 'Los puntos se recalculan con goles, resultados, tarjetas y progresión del torneo.'],
-  ['Bracket conectado', 'Cuando se cierra una fase, el cuadro se actualiza y arrastra clasificados a la siguiente ronda.'],
-  ['Comparador de porras', 'Mira equipos comunes, diferenciales y distancia real entre participantes.']
+const scoringRows = [
+  ['Gol a favor', SCORING_RULES.goalFor],
+  ['Gol en contra', SCORING_RULES.goalAgainst],
+  ['Tarjeta roja', SCORING_RULES.redCard],
+  ['Victoria', SCORING_RULES.win],
+  ['Empate', SCORING_RULES.draw],
+  ['1º de grupo', SCORING_RULES.groupWinner],
+  ['2º de grupo', SCORING_RULES.groupRunnerUp],
+  ['3º clasificado', SCORING_RULES.groupThird],
+  ['Pasar de fase', SCORING_RULES.phaseAdvanced],
+  ['Finalista', SCORING_RULES.finalist],
+  ['Tercer puesto', SCORING_RULES.thirdPlace],
+  ['Campeón', SCORING_RULES.champion]
 ]
+
+function formatPoints(value) {
+  return value > 0 ? `+${value}` : String(value)
+}
 
 export default function Home() {
   return (
@@ -26,50 +40,76 @@ export default function Home() {
           </div>
         </nav>
 
-        <section className="hero">
-          <div className="hero-panel">
+        <section className="hero" style={{ gridTemplateColumns: 'minmax(0, 1fr) 360px' }}>
+          <div className="hero-panel" style={{ minHeight: 460 }}>
             <p className="eyebrow">Mundial 2026</p>
-            <h1>La porra que se sigue como un torneo real</h1>
+            <h1>Haz tu Top10</h1>
             <p className="hero-copy">
-              Elige tu Top10, sigue grupos y eliminatorias, compara estrategias y mira cómo cada gol mueve el ranking.
+              Elige tus selecciones, sigue el ranking y mira cómo cada resultado cambia la porra.
             </p>
             <div className="hero-actions">
-              <a className="btn btn-secondary" href="/picks">Enviar Top10</a>
-              <a className="btn btn-primary" href="/tournament">Ver torneo</a>
+              <a className="btn btn-secondary" href="/picks">Enviar predicción</a>
+              <a className="btn btn-primary" href="/leaderboard">Ver ranking</a>
             </div>
           </div>
 
-          <div className="side-stack">
-            <div className="feature-card">
-              <strong>Reglas claras</strong>
-              <p>Goles, victorias, empates, rojas y bonus de fase suman puntos de equipo. Tu ranking multiplica esa puntuación.</p>
+          <aside className="panel" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 18 }}>
+            <div>
+              <p className="eyebrow" style={{ color: 'var(--brand)' }}>Resumen</p>
+              <h2 style={{ margin: 0, fontSize: 30, lineHeight: 1.05 }}>Simple: eliges 10 equipos.</h2>
+              <p className="muted" style={{ lineHeight: 1.6 }}>
+                El #1 multiplica x10, el #2 x9, y así hasta el #10, que multiplica x1. Los puntos salen del rendimiento real de cada equipo.
+              </p>
             </div>
-            <div className="feature-card">
-              <strong>Bloqueo de picks</strong>
-              <p>Las predicciones se cierran el día del primer partido del Mundial, antes de que empiece la fiesta.</p>
-            </div>
-            <div className="feature-card">
-              <strong>Panel admin</strong>
-              <p>Un único sitio para meter goles, rojas, desempates de eliminatoria y recalcular todo.</p>
-              <div style={{ marginTop: 16 }}>
-                <a className="ghost-link" href="/admin">Entrar al admin</a>
+            <div className="stat-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
+              <div className="stat">
+                <div className="stat-label">Picks</div>
+                <div className="stat-value">10</div>
+              </div>
+              <div className="stat">
+                <div className="stat-label">Máximo mult.</div>
+                <div className="stat-value">x10</div>
               </div>
             </div>
-          </div>
+            <a className="ghost-link" href="/tournament">Ver grupos y bracket</a>
+          </aside>
         </section>
 
         <section className="section">
           <div className="section-head">
-            <h2 className="section-title">Cómo se juega</h2>
-            <a className="ghost-link" href="/leaderboard">Ver ranking</a>
+            <div>
+              <h2 className="section-title">Qué puntúa</h2>
+              <p className="page-copy" style={{ marginTop: 8 }}>Cada selección suma o resta puntos. Luego se aplica el multiplicador de tu Top10.</p>
+            </div>
+            <a className="ghost-link" href="/compare">Comparar porras</a>
           </div>
-          <div className="card-grid">
-            {features.map(([title, copy]) => (
-              <article key={title} className="panel">
-                <h3>{title}</h3>
-                <p className="muted">{copy}</p>
-              </article>
-            ))}
+
+          <div className="panel">
+            <div className="table-wrap">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Acción</th>
+                    <th>Puntos de equipo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {scoringRows.map(([label, points]) => (
+                    <tr key={label}>
+                      <td>{label}</td>
+                      <td>
+                        <strong style={{ color: points < 0 ? 'var(--danger)' : 'var(--accent)' }}>
+                          {formatPoints(points)}
+                        </strong>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="muted" style={{ marginBottom: 0 }}>
+              Ejemplo: si tu equipo #1 suma 12 puntos, aporta 120 puntos a tu porra.
+            </p>
           </div>
         </section>
       </div>
