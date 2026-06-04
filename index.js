@@ -58,7 +58,7 @@ export default function Home() {
               <p className="eyebrow" style={{ color: 'var(--brand)' }}>Resumen</p>
               <h2 style={{ margin: 0, fontSize: 30, lineHeight: 1.05 }}>Simple: eliges 10 equipos.</h2>
               <p className="muted" style={{ lineHeight: 1.6 }}>
-                El #1 multiplica más. El #10 multiplica menos. Los puntos salen del rendimiento real de cada equipo.
+                El #1 multiplica x10, el #2 x9, y así hasta el #10, que multiplica x1. Los puntos salen del rendimiento real de cada equipo.
               </p>
             </div>
             <div className="stat-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
