@@ -40,7 +40,7 @@ export default function Home() {
           </div>
         </nav>
 
-        <section className="hero" style={{ gridTemplateColumns: 'minmax(0, 1fr) 360px' }}>
+        <section className="hero">
           <div className="hero-panel" style={{ minHeight: 460 }}>
             <p className="eyebrow">Mundial 2026</p>
             <h1>Haz tu Top10</h1>
@@ -61,7 +61,7 @@ export default function Home() {
                 El #1 multiplica x10, el #2 x9, y así hasta el #10, que multiplica x1. Los puntos salen del rendimiento real de cada equipo.
               </p>
             </div>
-            <div className="stat-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
+            <div className="stat-grid">
               <div className="stat">
                 <div className="stat-label">Picks</div>
                 <div className="stat-value">10</div>
@@ -86,7 +86,7 @@ export default function Home() {
 
           <div className="panel">
             <div className="table-wrap">
-              <table className="data-table">
+              <table className="data-table compact-table">
                 <thead>
                   <tr>
                     <th>Acción</th>
