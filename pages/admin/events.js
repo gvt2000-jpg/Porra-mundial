@@ -30,10 +30,10 @@ export default function AdminEvents() {
     const res = await adminFetch('/api/match_events', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
     const json = await res.json().catch(() => null)
     if (res.ok) {
-      setStatus('âœ… Evento creado exitosamente')
+      setStatus('Evento creado exitosamente')
       setForm({ match_id: '', team_id: '', event_type: 'goal', player_name: '', minute: '' })
     } else {
-      setStatus('âŒ ' + (json?.error || 'Error al crear evento'))
+      setStatus('Error: ' + (json?.error || 'Error al crear evento'))
     }
   }
 
@@ -46,13 +46,13 @@ export default function AdminEvents() {
   const labelStyle = { display: 'block', marginBottom: 10, fontWeight: 700, color: '#1f2937' }
   const inputStyle = { width: '100%', padding: '12px 14px', borderRadius: 10, border: '2px solid #e5e7eb', fontSize: 14, fontFamily: 'inherit', transition: 'all 0.2s' }
   const buttonStyle = { width: '100%', padding: '14px 28px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: '#fff', border: 'none', borderRadius: 12, cursor: 'pointer', fontWeight: 700, fontSize: 16, transition: 'all 0.3s' }
-  const messageStyle = { marginTop: 24, padding: 16, borderRadius: 12, background: status?.includes('âŒ') ? '#fee2e2' : '#dcfce7', color: status?.includes('âŒ') ? '#991b1b' : '#166534', fontWeight: 500 }
+  const messageStyle = { marginTop: 24, padding: 16, borderRadius: 12, background: status?.includes('Error:') ? '#fee2e2' : '#dcfce7', color: status?.includes('Error:') ? '#991b1b' : '#166534', fontWeight: 500 }
 
   return (
     <AdminGate>
     <main style={containerStyle}>
       <div style={maxWidthStyle}>
-        <h1 style={titleStyle}>ðŸŽ¬ Eventos del Torneo</h1>
+        <h1 style={titleStyle}>Eventos del Torneo</h1>
         <p style={subtitleStyle}>Registra goles, asistencias y tarjetas durante los partidos</p>
         
         <div style={formStyle}>
@@ -62,7 +62,7 @@ export default function AdminEvents() {
               <select value={form.match_id} onChange={e => setForm({ ...form, match_id: e.target.value })} style={inputStyle}>
                 <option value="">-- Selecciona partido --</option>
                 {matches.map((m) => (
-                  <option key={m.id} value={m.id}>{matchLabels[m.id] || `${m.id} â€” ${m.stage}`}</option>
+                  <option key={m.id} value={m.id}>{matchLabels[m.id] || `${m.id} - ${m.stage}`}</option>
                 ))}
               </select>
             </div>
@@ -76,10 +76,10 @@ export default function AdminEvents() {
             <div style={formGroupStyle}>
               <label style={labelStyle}>Tipo de evento:</label>
               <select value={form.event_type} onChange={e => setForm({ ...form, event_type: e.target.value })} style={inputStyle}>
-                <option value="goal">âš½ Gol</option>
-                <option value="assist">ðŸ‘Ÿ Asistencia</option>
-                <option value="red_card">ðŸ”´ Tarjeta Roja</option>
-                <option value="yellow_card">ðŸŸ¡ Tarjeta Amarilla</option>
+                <option value="goal">Gol</option>
+                <option value="assist">Asistencia</option>
+                <option value="red_card">Tarjeta Roja</option>
+                <option value="yellow_card">Tarjeta Amarilla</option>
               </select>
             </div>
             <div style={formGroupStyle}>
@@ -90,7 +90,7 @@ export default function AdminEvents() {
               <label style={labelStyle}>Minuto (opcional):</label>
               <input type="number" min="0" max="120" value={form.minute} onChange={e => setForm({ ...form, minute: e.target.value })} placeholder="45" style={inputStyle} />
             </div>
-            <button type="submit" style={buttonStyle} onMouseEnter={(e) => (e.target.style.transform = 'translateY(-2px)', e.target.style.boxShadow = '0 10px 25px rgba(102, 126, 234, 0.3)')} onMouseLeave={(e) => (e.target.style.transform = 'translateY(0)', e.target.style.boxShadow = 'none')}>ðŸŽ¯ Registrar Evento</button>
+            <button type="submit" style={buttonStyle} onMouseEnter={(e) => (e.target.style.transform = 'translateY(-2px)', e.target.style.boxShadow = '0 10px 25px rgba(102, 126, 234, 0.3)')} onMouseLeave={(e) => (e.target.style.transform = 'translateY(0)', e.target.style.boxShadow = 'none')}>Registrar Evento</button>
           </form>
           {status && <p style={messageStyle}>{status}</p>}
         </div>

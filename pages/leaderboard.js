@@ -24,7 +24,7 @@ export default function Leaderboard() {
           <div>
             <p className="eyebrow" style={{ color: 'var(--brand)' }}>Ranking vivo</p>
             <h1 className="page-title">Leaderboard</h1>
-            <p className="page-copy">PuntuaciÃ³n total de cada participante segÃºn los equipos de su Top10.</p>
+            <p className="page-copy">Puntuación total de cada participante según los equipos de su Top10.</p>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
             <a className="btn btn-muted" href="/simulate">Simular puntos</a>
@@ -33,7 +33,7 @@ export default function Leaderboard() {
         </header>
 
         {!data && <div className="panel">Cargando ranking...</div>}
-        {data && data.length === 0 && <div className="panel">TodavÃ­a no hay envÃ­os.</div>}
+        {data && data.length === 0 && <div className="panel">Todavía no hay envíos.</div>}
 
         {data && data.length > 0 && (
           <section className="ranking-list">

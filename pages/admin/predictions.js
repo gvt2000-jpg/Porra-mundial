@@ -60,7 +60,7 @@ export default function AdminPredictions() {
   }
 
   async function deleteSubmission(submitter) {
-    if (!confirm(`Â¿Borrar todas las predicciones de "${submitter}"?`)) return
+    if (!confirm(`¿Borrar todas las predicciones de "${submitter}"?`)) return
 
     const res = await adminFetch('/api/admin-picks', {
       method: 'DELETE',
@@ -83,16 +83,16 @@ export default function AdminPredictions() {
           <nav className="top-nav">
             <a className="brand-mark" href="/admin"><span className="brand-dot">26</span><span>Admin</span></a>
             <div className="nav-links">
-              <a className="nav-link" href="/admin/scoring-dashboard">PuntuaciÃ³n</a>
+              <a className="nav-link" href="/admin/scoring-dashboard">Puntuación</a>
               <a className="nav-link" href="/leaderboard">Ranking</a>
             </div>
           </nav>
 
           <header className="section-head">
             <div>
-              <p className="eyebrow" style={{ color: 'var(--brand)' }}>GestiÃ³n</p>
+              <p className="eyebrow" style={{ color: 'var(--brand)' }}>Gestión</p>
               <h1 className="page-title">Predicciones</h1>
-              <p className="page-copy">Borra envÃ­os duplicados o nombres mal puestos.</p>
+              <p className="page-copy">Borra envíos duplicados o nombres mal puestos.</p>
             </div>
             <button type="button" className="btn btn-muted" onClick={loadAll}>Refrescar</button>
           </header>
@@ -142,7 +142,7 @@ export default function AdminPredictions() {
                   <span className="rank-badge">{submission.count}</span>
                   <div>
                     <strong style={{ fontSize: 19 }}>{submission.submitter}</strong>
-                    <div className="muted">{submission.count} picks Â· {submission.created_at ? new Date(submission.created_at).toLocaleString('es-ES') : 'Sin fecha'}</div>
+                    <div className="muted">{submission.count} picks · {submission.created_at ? new Date(submission.created_at).toLocaleString('es-ES') : 'Sin fecha'}</div>
                   </div>
                   <button type="button" className="btn" onClick={() => deleteSubmission(submission.submitter)} style={{ background: '#fee2e2', color: '#991b1b', borderColor: '#fecaca' }}>
                     Borrar

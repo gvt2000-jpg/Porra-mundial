@@ -20,11 +20,11 @@ export default async function handler(req, res) {
     starts_at: match.starts_at
   }))
 
-  if (matches.some((m) => !m.home_team_id || !m.away_team_id)) {
-    return res.status(500).json({ error: 'No todos los equipos estÃ¡n disponibles para crear partidos' })
+  if (matches.some((match) => !match.home_team_id || !match.away_team_id)) {
+    return res.status(500).json({ error: 'No todos los equipos están disponibles para crear partidos' })
   }
 
-  const { data, error } = await supabase.from('matches').insert(matches)
+  const { error } = await supabase.from('matches').insert(matches)
   if (error) return res.status(500).json({ error: error.message })
-  return res.status(200).json({ imported: data?.length ?? 0 })
+  return res.status(200).json({ imported: matches.length })
 }

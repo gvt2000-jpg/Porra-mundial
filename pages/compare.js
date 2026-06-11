@@ -8,7 +8,7 @@ function PickRow({ pick }) {
   return (
     <div style={{ padding: '10px 0', borderBottom: '1px solid #eef2f7' }}>
       <strong>{pick.flag} {pick.team_name}</strong>
-      <div className="muted">#{pick.rank} Â· x{pick.multiplier} Â· {pick.contributed.toFixed(1)} pts</div>
+      <div className="muted">#{pick.rank} ? x{pick.multiplier} ? {pick.contributed.toFixed(1)} pts</div>
     </div>
   )
 }
@@ -98,7 +98,7 @@ export default function Compare() {
                 {comparison.common.map(({ left: a, right: b }) => (
                   <div key={a.team_id} style={{ padding: '10px 0', borderBottom: '1px solid #eef2f7' }}>
                     <strong>{a.flag} {a.team_name}</strong>
-                    <div className="muted">{left.submitter}: #{a.rank} x{a.multiplier} Â· {right.submitter}: #{b.rank} x{b.multiplier}</div>
+                    <div className="muted">{left.submitter}: #{a.rank} x{a.multiplier} ? {right.submitter}: #{b.rank} x{b.multiplier}</div>
                   </div>
                 ))}
               </div>

@@ -15,16 +15,16 @@ const scoringRows = [
   ['Tarjeta roja', SCORING_RULES.redCard],
   ['Victoria', SCORING_RULES.win],
   ['Empate', SCORING_RULES.draw],
-  ['1Âº de grupo', SCORING_RULES.groupWinner],
-  ['2Âº de grupo', SCORING_RULES.groupRunnerUp],
-  ['3Âº clasificado', SCORING_RULES.groupThird],
+  ['1º de grupo', SCORING_RULES.groupWinner],
+  ['2º de grupo', SCORING_RULES.groupRunnerUp],
+  ['3º clasificado', SCORING_RULES.groupThird],
   ['Llegar a 16vos', SCORING_RULES.reachRoundOf32],
   ['Llegar a 8vos', SCORING_RULES.reachRoundOf16],
   ['Llegar a cuartos', SCORING_RULES.reachQuarterFinal],
   ['Llegar a semis', SCORING_RULES.reachSemiFinal],
   ['Llegar a la final', SCORING_RULES.reachFinal],
   ['Tercer puesto', SCORING_RULES.thirdPlace],
-  ['CampeÃ³n', SCORING_RULES.champion]
+  ['Campeón', SCORING_RULES.champion]
 ]
 
 function formatPoints(value) {
@@ -50,10 +50,10 @@ export default function Home() {
             <p className="eyebrow">Mundial 2026</p>
             <h1>Haz tu Top10</h1>
             <p className="hero-copy">
-              Elige tus selecciones, sigue el ranking y mira cÃ³mo cada resultado cambia la porra.
+              Elige tus selecciones, sigue el ranking y mira cómo cada resultado cambia la porra.
             </p>
             <div className="hero-actions">
-              <a className="btn btn-secondary" href="/picks">Enviar predicciÃ³n</a>
+              <a className="btn btn-secondary" href="/picks">Enviar predicción</a>
               <a className="btn btn-primary" href="/leaderboard">Ver ranking</a>
               <a className="btn btn-secondary" href="/simulate">Simular puntos</a>
             </div>
@@ -64,7 +64,7 @@ export default function Home() {
               <p className="eyebrow" style={{ color: 'var(--brand)' }}>Resumen</p>
               <h2 style={{ margin: 0, fontSize: 30, lineHeight: 1.05 }}>Simple: eliges 10 equipos.</h2>
               <p className="muted" style={{ lineHeight: 1.6 }}>
-                El #1 multiplica x10, el #2 x9, y asÃ­ hasta el #10, que multiplica x1. Los puntos salen del rendimiento real de cada equipo.
+                El #1 multiplica x10, el #2 x9, y así hasta el #10, que multiplica x1. Los puntos salen del rendimiento real de cada equipo.
               </p>
             </div>
             <div className="stat-grid">
@@ -73,7 +73,7 @@ export default function Home() {
                 <div className="stat-value">10</div>
               </div>
               <div className="stat">
-                <div className="stat-label">MÃ¡ximo mult.</div>
+                <div className="stat-label">Máximo mult.</div>
                 <div className="stat-value">x10</div>
               </div>
             </div>
@@ -85,8 +85,8 @@ export default function Home() {
         <section className="section">
           <div className="section-head">
             <div>
-              <h2 className="section-title">QuÃ© puntÃºa</h2>
-              <p className="page-copy" style={{ marginTop: 8 }}>Cada selecciÃ³n suma o resta puntos. Luego se aplica el multiplicador de tu Top10.</p>
+              <h2 className="section-title">Qué puntúa</h2>
+              <p className="page-copy" style={{ marginTop: 8 }}>Cada selección suma o resta puntos. Luego se aplica el multiplicador de tu Top10.</p>
             </div>
             <a className="ghost-link" href="/simulate">Simular puntuaciones</a>
           </div>
@@ -96,7 +96,7 @@ export default function Home() {
               <table className="data-table compact-table">
                 <thead>
                   <tr>
-                    <th>AcciÃ³n</th>
+                    <th>Acción</th>
                     <th>Puntos de equipo</th>
                   </tr>
                 </thead>

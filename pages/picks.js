@@ -20,7 +20,7 @@ export default function Picks() {
       body: JSON.stringify(payload)
     })
     const json = await res.json().catch(() => null)
-    if (res.ok) setStatus('Guardado correctamente. Tu Top10 estÃ¡ registrado.')
+    if (res.ok) setStatus('Guardado correctamente. Tu Top10 está registrado.')
     else setStatus(json?.error || 'Error al guardar')
   }
 
@@ -43,7 +43,7 @@ export default function Picks() {
           <p className="eyebrow" style={{ color: 'var(--brand)' }}>Predicciones</p>
           <h1 className="page-title">Elige tu Top10</h1>
           <p className="page-copy" style={{ marginLeft: 'auto', marginRight: 'auto' }}>
-            Ordena las selecciones que crees que van a sumar mÃ¡s. Cuanto mÃ¡s arriba las pongas, mÃ¡s multiplican.
+            Ordena las selecciones que crees que van a sumar más. Cuanto más arriba las pongas, más multiplican.
           </p>
           <p className={`alert ${lock.locked ? 'alert-error' : 'alert-success'}`} style={{ display: 'inline-block', marginTop: 16 }}>
             {lock.unlock_active && lock.unlocked_until
