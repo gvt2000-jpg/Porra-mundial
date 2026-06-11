@@ -10,7 +10,6 @@ export default function AdminDashboard() {
     },
     {
       title: 'Predicciones',
-<<<<<<< HEAD
       desc: 'Revisa envios, borra duplicados y abre una ventana temporal para rezagados.',
       href: '/admin/predictions'
     },
@@ -20,12 +19,6 @@ export default function AdminDashboard() {
       href: '/simulate'
     },
     {
-=======
-      desc: 'Revisa envios por participante y borra duplicados o nombres mal escritos.',
-      href: '/admin/predictions'
-    },
-    {
->>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
       title: 'Eventos avanzados',
       desc: 'Registra otros eventos de partido cuando necesites detalle extra fuera de las rojas del panel principal.',
       href: '/admin/events'

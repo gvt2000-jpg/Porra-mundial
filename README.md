@@ -1,9 +1,8 @@
-<<<<<<< HEAD
 # Porras Mundial
 
-Proyecto mínimo para gestionar porras del Mundial usando Next.js y Supabase.
+Proyecto mÃ­nimo para gestionar porras del Mundial usando Next.js y Supabase.
 
-Setup rápido:
+Setup rÃ¡pido:
 
 1. Clona este repo.
 2. Crea un proyecto en Supabase y copia las credenciales.
@@ -17,29 +16,6 @@ npm run dev
 
 Despliegue:
 - Conecta el repo a Vercel.
-- Añade las variables de entorno en Vercel: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
+- AÃ±ade las variables de entorno en Vercel: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
 
-Pasos siguientes: añadir autenticación, esquema de tablas en Supabase (teams, matches, picks), y motor de scoring.
-=======
-# Porras Mundial
-
-Proyecto mínimo para gestionar porras del Mundial usando Next.js y Supabase.
-
-Setup rápido:
-
-1. Clona este repo.
-2. Crea un proyecto en Supabase y copia las credenciales.
-3. Rellena `.env.local` usando `.env.example`.
-4. Instala dependencias y arranca en local:
-
-```bash
-npm install
-npm run dev
-```
-
-Despliegue:
-- Conecta el repo a Vercel.
-- Añade las variables de entorno en Vercel: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
-
-Pasos siguientes: añadir autenticación, esquema de tablas en Supabase (teams, matches, picks), y motor de scoring.
->>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
+Pasos siguientes: aÃ±adir autenticaciÃ³n, esquema de tablas en Supabase (teams, matches, picks), y motor de scoring.

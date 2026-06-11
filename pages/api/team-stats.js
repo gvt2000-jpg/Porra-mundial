@@ -35,17 +35,10 @@ export default async function handler(req, res) {
       }
       if (error) return res.status(500).json({ error: error.message })
       return res.status(200).json({ teams: data || [], schema_missing: false })
-<<<<<<< HEAD
     } catch (err) {
       return res.status(500).json({ error: err.message || String(err) })
     }
   }
-=======
-    } catch (err) {
-      return res.status(500).json({ error: err.message || String(err) })
-    }
-  }
->>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
 
   if (req.method === 'POST') {
     const {
@@ -93,7 +86,6 @@ export default async function handler(req, res) {
         })
       }
       if (error) return res.status(500).json({ error: error.message })
-<<<<<<< HEAD
       return res.status(200).json({ ok: true, data: data?.[0] })
     } catch (err) {
       return res.status(500).json({ error: err.message || String(err) })
@@ -102,13 +94,3 @@ export default async function handler(req, res) {
 
   return res.status(405).end()
 }
-=======
-      return res.status(200).json({ ok: true, data: data?.[0] })
-    } catch (err) {
-      return res.status(500).json({ error: err.message || String(err) })
-    }
-  }
-
-  return res.status(405).end()
-}
->>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4

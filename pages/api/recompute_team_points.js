@@ -143,21 +143,12 @@ export default async function handler(req, res) {
       points: calculateTeamPoints(score),
       last_updated: new Date().toISOString()
     }))
-<<<<<<< HEAD
 
     if (upserts.length > 0) {
       const { error } = await supabase.from('team_points').upsert(upserts, { onConflict: 'team_id' })
       if (error) throw error
     }
 
-=======
-
-    if (upserts.length > 0) {
-      const { error } = await supabase.from('team_points').upsert(upserts, { onConflict: 'team_id' })
-      if (error) throw error
-    }
-
->>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
     return res.status(200).json({
       ok: true,
       computed: upserts.length,

@@ -8,7 +8,7 @@ function PickRow({ pick }) {
   return (
     <div style={{ padding: '10px 0', borderBottom: '1px solid #eef2f7' }}>
       <strong>{pick.flag} {pick.team_name}</strong>
-      <div className="muted">#{pick.rank} · x{pick.multiplier} · {pick.contributed.toFixed(1)} pts</div>
+      <div className="muted">#{pick.rank} Â· x{pick.multiplier} Â· {pick.contributed.toFixed(1)} pts</div>
     </div>
   )
 }
@@ -53,10 +53,7 @@ export default function Compare() {
           <a className="brand-mark" href="/"><span className="brand-dot">26</span><span>Porra Mundial</span></a>
           <div className="nav-links">
             <a className="nav-link" href="/leaderboard">Ranking</a>
-<<<<<<< HEAD
             <a className="nav-link" href="/simulate">Simular</a>
-=======
->>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
             <a className="nav-link" href="/picks">Predicciones</a>
             <a className="nav-link" href="/tournament">Torneo</a>
           </div>
@@ -101,7 +98,7 @@ export default function Compare() {
                 {comparison.common.map(({ left: a, right: b }) => (
                   <div key={a.team_id} style={{ padding: '10px 0', borderBottom: '1px solid #eef2f7' }}>
                     <strong>{a.flag} {a.team_name}</strong>
-                    <div className="muted">{left.submitter}: #{a.rank} x{a.multiplier} · {right.submitter}: #{b.rank} x{b.multiplier}</div>
+                    <div className="muted">{left.submitter}: #{a.rank} x{a.multiplier} Â· {right.submitter}: #{b.rank} x{b.multiplier}</div>
                   </div>
                 ))}
               </div>

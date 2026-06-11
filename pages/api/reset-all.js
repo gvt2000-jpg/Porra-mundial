@@ -7,21 +7,12 @@ export default async function handler(req, res) {
   if (!requireAdmin(req, res)) return
 
   try {
-<<<<<<< HEAD
     // Reset all team stats to 0
     const { data: teams } = await supabase.from('teams').select('id')
     if (!teams || teams.length === 0) {
       return res.status(400).json({ error: 'No teams found to reset' })
     }
 
-=======
-    // Reset all team stats to 0
-    const { data: teams } = await supabase.from('teams').select('id')
-    if (!teams || teams.length === 0) {
-      return res.status(400).json({ error: 'No teams found to reset' })
-    }
-
->>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
     for (const team of teams) {
       const { error } = await supabase
         .from('teams')
@@ -41,7 +32,6 @@ export default async function handler(req, res) {
         .eq('id', team.id)
       if (error && !isMissingAchievementColumns(error)) throw error
     }
-<<<<<<< HEAD
 
     // Delete all picks
     await supabase.from('picks').delete().gte('id', '00000000-0000-0000-0000-000000000000')
@@ -54,17 +44,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: err.message || String(err) })
   }
 }
-=======
-
-    // Delete all picks
-    await supabase.from('picks').delete().gte('id', '00000000-0000-0000-0000-000000000000')
-
-    // Reset team points
-    await supabase.from('team_points').delete().gte('team_id', '00000000-0000-0000-0000-000000000000')
-
-    return res.status(200).json({ ok: true, reset_teams: teams.length, message: 'System reset to initial state' })
-  } catch (err) {
-    return res.status(500).json({ error: err.message || String(err) })
-  }
-}
->>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
