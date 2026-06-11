@@ -14,7 +14,10 @@ export default function Leaderboard() {
           <a className="brand-mark" href="/"><span className="brand-dot">26</span><span>Porra Mundial</span></a>
           <div className="nav-links">
             <a className="nav-link" href="/picks">Predicciones</a>
+<<<<<<< HEAD
             <a className="nav-link" href="/simulate">Simular</a>
+=======
+>>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
             <a className="nav-link" href="/tournament">Torneo</a>
             <a className="nav-link" href="/compare">Comparar</a>
           </div>
@@ -26,10 +29,14 @@ export default function Leaderboard() {
             <h1 className="page-title">Leaderboard</h1>
             <p className="page-copy">Puntuación total de cada participante según los equipos de su Top10.</p>
           </div>
+<<<<<<< HEAD
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
             <a className="btn btn-muted" href="/simulate">Simular puntos</a>
             <a className="btn btn-muted" href="/compare">Comparar participantes</a>
           </div>
+=======
+          <a className="btn btn-muted" href="/compare">Comparar participantes</a>
+>>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
         </header>
 
         {!data && <div className="panel">Cargando ranking...</div>}

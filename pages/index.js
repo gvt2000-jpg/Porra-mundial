@@ -3,7 +3,10 @@ import { SCORING_RULES } from '../lib/scoring'
 const navItems = [
   ['Predicciones', '/picks'],
   ['Ranking', '/leaderboard'],
+<<<<<<< HEAD
   ['Simular', '/simulate'],
+=======
+>>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
   ['Torneo', '/tournament'],
   ['Comparar', '/compare'],
   ['Admin', '/admin']
@@ -55,7 +58,10 @@ export default function Home() {
             <div className="hero-actions">
               <a className="btn btn-secondary" href="/picks">Enviar predicción</a>
               <a className="btn btn-primary" href="/leaderboard">Ver ranking</a>
+<<<<<<< HEAD
               <a className="btn btn-secondary" href="/simulate">Simular puntos</a>
+=======
+>>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
             </div>
           </div>
 
@@ -88,7 +94,11 @@ export default function Home() {
               <h2 className="section-title">Qué puntúa</h2>
               <p className="page-copy" style={{ marginTop: 8 }}>Cada selección suma o resta puntos. Luego se aplica el multiplicador de tu Top10.</p>
             </div>
+<<<<<<< HEAD
             <a className="ghost-link" href="/simulate">Simular puntuaciones</a>
+=======
+            <a className="ghost-link" href="/compare">Comparar porras</a>
+>>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
           </div>
 
           <div className="panel">

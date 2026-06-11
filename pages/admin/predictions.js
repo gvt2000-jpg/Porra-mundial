@@ -4,13 +4,17 @@ import { adminFetch } from '../../lib/adminClient'
 
 export default function AdminPredictions() {
   const [submissions, setSubmissions] = useState([])
+<<<<<<< HEAD
   const [lock, setLock] = useState(null)
   const [unlockMinutes, setUnlockMinutes] = useState(60)
   const [setupSql, setSetupSql] = useState('')
+=======
+>>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
 
   useEffect(() => {
+<<<<<<< HEAD
     loadAll()
   }, [])
 
@@ -21,10 +25,18 @@ export default function AdminPredictions() {
   }
 
   async function loadSubmissions() {
+=======
+    loadSubmissions()
+  }, [])
+
+  async function loadSubmissions() {
+    setLoading(true)
+>>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
     const res = await adminFetch('/api/admin-picks')
     const json = await res.json().catch(() => null)
     if (res.ok) {
       setSubmissions(json.submissions || [])
+<<<<<<< HEAD
     } else {
       setMessage('Error: ' + (json?.error || 'No se pudieron cargar las predicciones'))
     }
@@ -57,6 +69,13 @@ export default function AdminPredictions() {
       setMessage('Error: ' + (json?.error || 'No se pudo actualizar el cierre'))
       setSetupSql(json?.setup_sql || '')
     }
+=======
+      setMessage('')
+    } else {
+      setMessage('Error: ' + (json?.error || 'No se pudieron cargar las predicciones'))
+    }
+    setLoading(false)
+>>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
   }
 
   async function deleteSubmission(submitter) {
@@ -94,6 +113,7 @@ export default function AdminPredictions() {
               <h1 className="page-title">Predicciones</h1>
               <p className="page-copy">Borra envíos duplicados o nombres mal puestos.</p>
             </div>
+<<<<<<< HEAD
             <button type="button" className="btn btn-muted" onClick={loadAll}>Refrescar</button>
           </header>
 
@@ -132,6 +152,12 @@ export default function AdminPredictions() {
             </div>
           </section>
 
+=======
+            <button type="button" className="btn btn-muted" onClick={loadSubmissions}>Refrescar</button>
+          </header>
+
+          {message && <p className={`alert ${message.startsWith('Error') ? 'alert-error' : 'alert-success'}`}>{message}</p>}
+>>>>>>> f84f3f17b3d1d09e667e64e5fdd030f9dd1d3ae4
           {loading && <div className="panel">Cargando predicciones...</div>}
           {!loading && submissions.length === 0 && <div className="panel">No hay predicciones guardadas.</div>}
 
