@@ -5,7 +5,13 @@ import { ACHIEVEMENT_COLUMNS_SQL, isMissingAchievementColumns } from '../../lib/
 import { calculateGroupQualification } from '../../lib/groupQualification'
 import { getMatchWinner, syncTournamentProgression } from '../../lib/tournamentProgression'
 
-const PHASE_ADVANCING_STAGES = new Set(['round_of_32', 'round_of_16', 'quarter_final', 'semi_final'])
+const STAGE_REACHED_FIELD = {
+  round_of_32: 'reached_round_of_32',
+  round_of_16: 'reached_round_of_16',
+  quarter_final: 'reached_quarter_final',
+  semi_final: 'reached_semi_final',
+  final: 'reached_final'
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
@@ -15,7 +21,7 @@ export default async function handler(req, res) {
     let schemaMissing = false
     let { data: teams, error: teamError } = await supabase
       .from('teams')
-      .select('id, passed_group, group_finish_position, phases_advanced, finalist, third_place, champion')
+      .select('id, passed_group, group_finish_position, phases_advanced, reached_round_of_32, reached_round_of_16, reached_quarter_final, reached_semi_final, reached_final, finalist, third_place, champion')
     if (teamError && isMissingAchievementColumns(teamError)) {
       schemaMissing = true
       const fallback = await supabase.from('teams').select('id')
@@ -75,7 +81,10 @@ export default async function handler(req, res) {
 
     const qualification = calculateGroupQualification(matches || [])
     for (const teamId of qualification.qualified) {
-      if (scores[teamId]) scores[teamId].passed_group = true
+      if (scores[teamId]) {
+        scores[teamId].passed_group = true
+        scores[teamId].reached_round_of_32 = true
+      }
     }
 
     for (const group of Object.values(qualification.groups || {})) {
@@ -89,17 +98,21 @@ export default async function handler(req, res) {
     }
 
     for (const match of matches || []) {
-      if (!match.played || String(match.stage || '').startsWith('group_')) continue
+      if (String(match.stage || '').startsWith('group_')) continue
+
+      const reachedField = STAGE_REACHED_FIELD[match.stage]
+      if (reachedField) {
+        if (scores[match.home_team_id]) scores[match.home_team_id][reachedField] = true
+        if (scores[match.away_team_id]) scores[match.away_team_id][reachedField] = true
+      }
+
+      if (!match.played) continue
       const winnerId = getMatchWinner(match)
       if (!winnerId || !scores[winnerId]) continue
 
-      if (PHASE_ADVANCING_STAGES.has(match.stage)) scores[winnerId].phases_advanced += 1
-      if (match.stage === 'semi_final') scores[winnerId].finalist = true
       if (match.stage === 'third_place') scores[winnerId].third_place = true
       if (match.stage === 'final') {
         scores[winnerId].champion = true
-        if (scores[match.home_team_id]) scores[match.home_team_id].finalist = true
-        if (scores[match.away_team_id]) scores[match.away_team_id].finalist = true
       }
     }
 
@@ -109,7 +122,12 @@ export default async function handler(req, res) {
         passed_group: Boolean(scores[team.id]?.passed_group),
         group_finish_position: Number(scores[team.id]?.group_finish_position || 0),
         phases_advanced: Number(scores[team.id]?.phases_advanced || 0),
-        finalist: Boolean(scores[team.id]?.finalist),
+        reached_round_of_32: Boolean(scores[team.id]?.reached_round_of_32),
+        reached_round_of_16: Boolean(scores[team.id]?.reached_round_of_16),
+        reached_quarter_final: Boolean(scores[team.id]?.reached_quarter_final),
+        reached_semi_final: Boolean(scores[team.id]?.reached_semi_final),
+        reached_final: Boolean(scores[team.id]?.reached_final),
+        finalist: Boolean(scores[team.id]?.reached_final),
         third_place: Boolean(scores[team.id]?.third_place),
         champion: Boolean(scores[team.id]?.champion)
       }))

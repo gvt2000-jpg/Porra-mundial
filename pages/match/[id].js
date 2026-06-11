@@ -53,13 +53,13 @@ export default function MatchDetail() {
           <div className="muted" style={{ fontWeight: 900, marginBottom: 18 }}>
             {match.stage} · {match.starts_at ? new Date(match.starts_at).toLocaleString('es-ES') : 'Fecha por definir'}
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 20, alignItems: 'center' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 58 }}>{match.home_team?.flag}</div>
-              <h1 style={{ margin: 0, fontSize: 30 }}>{match.home_team?.name || 'Local'}</h1>
+          <div className="match-scoreboard">
+            <div className="match-team">
+              <div className="match-flag">{match.home_team?.flag}</div>
+              <h1 className="match-team-name">{match.home_team?.name || 'Local'}</h1>
             </div>
-            <div style={{ textAlign: 'center', minWidth: 160 }}>
-              <div style={{ fontSize: 54, fontWeight: 950 }}>{match.played ? `${match.home_score ?? 0} - ${match.away_score ?? 0}` : 'vs'}</div>
+            <div className="match-score">
+              <div className="match-score-value">{match.played ? `${match.home_score ?? 0} - ${match.away_score ?? 0}` : 'vs'}</div>
               <div className="muted" style={{ fontWeight: 900 }}>{match.played ? 'Jugado' : 'Pendiente'}</div>
               {tiedKnockout && (
                 <div style={{ marginTop: 8, color: winnerTeam ? 'var(--brand)' : 'var(--danger)', fontWeight: 950 }}>
@@ -67,9 +67,9 @@ export default function MatchDetail() {
                 </div>
               )}
             </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 58 }}>{match.away_team?.flag}</div>
-              <h1 style={{ margin: 0, fontSize: 30 }}>{match.away_team?.name || 'Visitante'}</h1>
+            <div className="match-team">
+              <div className="match-flag">{match.away_team?.flag}</div>
+              <h1 className="match-team-name">{match.away_team?.name || 'Visitante'}</h1>
             </div>
           </div>
         </section>

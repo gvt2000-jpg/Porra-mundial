@@ -46,7 +46,6 @@ export default function Tournament() {
   }, [])
 
   const matchRowStyle = { display: 'grid', gridTemplateColumns: '1fr 48px 1fr', gap: 8, alignItems: 'center', padding: '9px 10px', background: '#fff', border: '1px solid #eef2f7', borderRadius: 8, fontSize: 13, textDecoration: 'none' }
-  const bracketStyle = { display: 'grid', gridTemplateColumns: 'repeat(6, minmax(230px, 1fr))', gap: 14, overflowX: 'auto', paddingBottom: 8, alignItems: 'start' }
   const bracketMatchStyle = { display: 'block', color: 'inherit', textDecoration: 'none', background: '#fff', border: '1px solid var(--line)', borderLeft: '4px solid var(--brand)', borderRadius: 8, padding: 12, marginBottom: 12, boxShadow: 'var(--shadow-soft)' }
   const bracketRowStyle = { display: 'grid', gridTemplateColumns: '1fr auto', gap: 8, alignItems: 'center', padding: '7px 0' }
 
@@ -83,7 +82,7 @@ export default function Tournament() {
             <h2 className="section-title">Grupos</h2>
             <span className="muted">Top 2 directo + mejores terceros</span>
           </div>
-          <div className="card-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
+          <div className="card-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))' }}>
             {data.groups.map((group) => (
               <article key={group.label} className="panel" style={{ padding: 0, overflow: 'hidden' }}>
                 <div style={{ padding: '13px 16px', background: '#101827', color: '#fff', fontWeight: 950, display: 'flex', justifyContent: 'space-between' }}>
@@ -157,7 +156,7 @@ export default function Tournament() {
             <h2 className="section-title">Bracket</h2>
             <span className="muted">Se actualiza al recalcular desde admin</span>
           </div>
-          <div style={bracketStyle}>
+          <div className="bracket-scroll">
             {data.bracket.map((stage) => (
               <div key={stage.key} style={{ minWidth: 230 }}>
                 <div style={{ marginBottom: 10, padding: '10px 12px', color: '#fff', background: '#101827', borderRadius: 8, fontWeight: 950 }}>{stage.label}</div>

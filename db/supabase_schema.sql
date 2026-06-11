@@ -12,6 +12,11 @@ create table if not exists teams (
   passed_group boolean default false,
   group_finish_position integer default 0 check (group_finish_position >= 0 and group_finish_position <= 3),
   phases_advanced integer default 0 check (phases_advanced >= 0),
+  reached_round_of_32 boolean default false,
+  reached_round_of_16 boolean default false,
+  reached_quarter_final boolean default false,
+  reached_semi_final boolean default false,
+  reached_final boolean default false,
   finalist boolean default false,
   third_place boolean default false,
   champion boolean default false,
@@ -45,6 +50,13 @@ create table if not exists picks (
 
 create index if not exists idx_picks_user on picks(user_id);
 create index if not exists idx_picks_submitter on picks(submitter_name);
+
+-- App settings: small key/value switches controlled from admin
+create table if not exists app_settings (
+  key text primary key,
+  value jsonb not null default '{}'::jsonb,
+  updated_at timestamptz default now()
+);
 
 -- Matches
 create table if not exists matches (

@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     try {
       const { data, error } = await supabase
         .from('teams')
-        .select('id, name, passed_group, group_finish_position, phases_advanced, finalist, third_place, champion')
+        .select('id, name, passed_group, group_finish_position, phases_advanced, reached_round_of_32, reached_round_of_16, reached_quarter_final, reached_semi_final, reached_final, finalist, third_place, champion')
         .order('name')
       if (error && isMissingAchievementColumns(error)) {
         const fallback = await supabase.from('teams').select('id, name').order('name')
@@ -20,6 +20,11 @@ export default async function handler(req, res) {
             passed_group: false,
             group_finish_position: 0,
             phases_advanced: 0,
+            reached_round_of_32: false,
+            reached_round_of_16: false,
+            reached_quarter_final: false,
+            reached_semi_final: false,
+            reached_final: false,
             finalist: false,
             third_place: false,
             champion: false
@@ -36,7 +41,20 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { team_id, passed_group, group_finish_position, phases_advanced, finalist, third_place, champion } = req.body
+    const {
+      team_id,
+      passed_group,
+      group_finish_position,
+      phases_advanced,
+      reached_round_of_32,
+      reached_round_of_16,
+      reached_quarter_final,
+      reached_semi_final,
+      reached_final,
+      finalist,
+      third_place,
+      champion
+    } = req.body
     if (!team_id) {
       return res.status(400).json({ error: 'team_id required' })
     }
@@ -46,6 +64,11 @@ export default async function handler(req, res) {
         passed_group: Boolean(passed_group),
         group_finish_position: Math.max(0, Math.min(3, Number(group_finish_position) || 0)),
         phases_advanced: Math.max(0, Number(phases_advanced) || 0),
+        reached_round_of_32: Boolean(reached_round_of_32),
+        reached_round_of_16: Boolean(reached_round_of_16),
+        reached_quarter_final: Boolean(reached_quarter_final),
+        reached_semi_final: Boolean(reached_semi_final),
+        reached_final: Boolean(reached_final),
         finalist: Boolean(finalist),
         third_place: Boolean(third_place),
         champion: Boolean(champion)

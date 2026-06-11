@@ -16,7 +16,19 @@ export default async function handler(req, res) {
     for (const team of teams) {
       const { error } = await supabase
         .from('teams')
-        .update({ passed_group: false, group_finish_position: 0, phases_advanced: 0, finalist: false, third_place: false, champion: false })
+        .update({
+          passed_group: false,
+          group_finish_position: 0,
+          phases_advanced: 0,
+          reached_round_of_32: false,
+          reached_round_of_16: false,
+          reached_quarter_final: false,
+          reached_semi_final: false,
+          reached_final: false,
+          finalist: false,
+          third_place: false,
+          champion: false
+        })
         .eq('id', team.id)
       if (error && !isMissingAchievementColumns(error)) throw error
     }

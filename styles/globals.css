@@ -424,6 +424,7 @@ select {
 
 .table-wrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid var(--line);
   border-radius: var(--radius);
 }
@@ -433,6 +434,10 @@ select {
   min-width: 640px;
   border-collapse: collapse;
   background: #fff;
+}
+
+.compact-table {
+  min-width: 0;
 }
 
 .data-table th,
@@ -455,9 +460,49 @@ select {
   gap: 16px;
 }
 
+.match-scoreboard {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.match-team {
+  text-align: center;
+}
+
+.match-flag {
+  font-size: 58px;
+}
+
+.match-team-name {
+  margin: 0;
+  font-size: 30px;
+}
+
+.match-score {
+  text-align: center;
+  min-width: 160px;
+}
+
+.match-score-value {
+  font-size: 54px;
+  font-weight: 950;
+}
+
+.bracket-scroll {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(230px, 1fr));
+  gap: 14px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+  align-items: start;
+}
+
 @media (max-width: 860px) {
   .page {
-    padding: 22px 14px 44px;
+    padding: 18px 12px 40px;
   }
 
   .top-nav,
@@ -472,21 +517,64 @@ select {
   }
 
   .nav-links {
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: stretch;
   }
 
   .hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    gap: 14px;
   }
 
   .hero-panel {
-    min-height: 460px;
-    padding: 28px;
+    min-height: 360px !important;
+    padding: 24px;
+    background-position: center top;
+  }
+
+  .hero h1,
+  .page-title {
+    font-size: clamp(34px, 12vw, 48px);
+    line-height: 1;
+  }
+
+  .hero-copy,
+  .page-copy {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-top: 22px;
+  }
+
+  .btn,
+  .ghost-link,
+  .nav-link {
+    width: 100%;
   }
 
   .field-row {
     grid-template-columns: 1fr;
     gap: 6px;
+  }
+
+  .form-card,
+  .panel,
+  .feature-card,
+  .ranking-card {
+    padding: 16px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .split-grid {
+    grid-template-columns: 1fr;
   }
 
   .ranking-head {
@@ -496,5 +584,130 @@ select {
   .score {
     text-align: left;
     grid-column: 2;
+  }
+
+  .data-table {
+    min-width: 560px;
+    font-size: 13px;
+  }
+
+  .compact-table {
+    min-width: 0;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 9px 8px;
+  }
+
+  .match-scoreboard {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .match-team {
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    text-align: left;
+  }
+
+  .match-flag {
+    font-size: 42px;
+  }
+
+  .match-team-name {
+    font-size: 22px;
+    overflow-wrap: anywhere;
+  }
+
+  .match-score {
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: #f8fafc;
+  }
+
+  .match-score-value {
+    font-size: 42px;
+  }
+
+  .bracket-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    margin-left: -12px;
+    margin-right: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .bracket-scroll > div {
+    min-width: 82vw !important;
+    scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 520px) {
+  .brand-mark {
+    font-size: 15px;
+  }
+
+  .nav-links {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .nav-link,
+  .ghost-link,
+  .btn {
+    min-height: 42px;
+    padding: 9px 10px;
+    font-size: 13px;
+  }
+
+  .hero-panel {
+    min-height: 310px !important;
+    padding: 20px;
+  }
+
+  .panel h2,
+  .section-title {
+    font-size: 22px;
+  }
+
+  .stat-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .stat {
+    padding: 14px;
+  }
+
+  .stat-value {
+    font-size: 26px;
+  }
+
+  .data-table {
+    min-width: 500px;
+  }
+
+  .compact-table {
+    min-width: 0;
+  }
+
+  .ranking-head {
+    grid-template-columns: 1fr;
+  }
+
+  .rank-badge {
+    width: fit-content;
+  }
+
+  .score {
+    grid-column: auto;
   }
 }

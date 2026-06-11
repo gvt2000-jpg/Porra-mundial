@@ -9,6 +9,16 @@ export default function AdminDashboard() {
       primary: true
     },
     {
+      title: 'Predicciones',
+      desc: 'Revisa envios, borra duplicados y abre una ventana temporal para rezagados.',
+      href: '/admin/predictions'
+    },
+    {
+      title: 'Simulador',
+      desc: 'Prueba puntuaciones futuras y revisa como se moveria el ranking.',
+      href: '/simulate'
+    },
+    {
       title: 'Eventos avanzados',
       desc: 'Registra otros eventos de partido cuando necesites detalle extra fuera de las rojas del panel principal.',
       href: '/admin/events'

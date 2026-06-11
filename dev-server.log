@@ -1,0 +1,11 @@
+
+> porras-mundial@0.1.0 dev
+> next dev -p 3000
+
+  ▲ Next.js 13.5.5
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Ready in 4.3s
+ ✓ Compiled /api/picks-lock in 1200ms (227 modules)
+ ✓ Compiled /api/admin-picks-lock in 54ms (76 modules)

@@ -33,6 +33,7 @@ export default function Picks() {
           <a className="brand-mark" href="/"><span className="brand-dot">26</span><span>Porra Mundial</span></a>
           <div className="nav-links">
             <a className="nav-link" href="/leaderboard">Ranking</a>
+            <a className="nav-link" href="/simulate">Simular</a>
             <a className="nav-link" href="/tournament">Torneo</a>
             <a className="nav-link" href="/compare">Comparar</a>
           </div>
@@ -45,7 +46,9 @@ export default function Picks() {
             Ordena las selecciones que crees que van a sumar más. Cuanto más arriba las pongas, más multiplican.
           </p>
           <p className={`alert ${lock.locked ? 'alert-error' : 'alert-success'}`} style={{ display: 'inline-block', marginTop: 16 }}>
-            Cierre de predicciones: {lock.lock_label}
+            {lock.unlock_active && lock.unlocked_until
+              ? `Predicciones desbloqueadas hasta ${new Date(lock.unlocked_until).toLocaleString('es-ES')}`
+              : `Cierre de predicciones: ${lock.lock_label}`}
           </p>
         </header>
 

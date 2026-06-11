@@ -53,6 +53,7 @@ export default function Compare() {
           <a className="brand-mark" href="/"><span className="brand-dot">26</span><span>Porra Mundial</span></a>
           <div className="nav-links">
             <a className="nav-link" href="/leaderboard">Ranking</a>
+            <a className="nav-link" href="/simulate">Simular</a>
             <a className="nav-link" href="/picks">Predicciones</a>
             <a className="nav-link" href="/tournament">Torneo</a>
           </div>
