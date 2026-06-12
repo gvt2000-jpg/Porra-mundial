@@ -193,6 +193,7 @@ export default function ScoringDashboard() {
       setMessage('Partido actualizado.')
       await syncProgression(false)
     } else {
+      setSetupSql(json?.setup_sql || setupSql)
       setMessage('Error: ' + (json?.error || 'Error actualizando partido'))
     }
   }
@@ -205,6 +206,7 @@ export default function ScoringDashboard() {
       await loadMatches()
       if (showMessage) setMessage(`Bracket sincronizado. Creados ${json.created}, actualizados ${json.updated}.`)
     } else {
+      setSetupSql(json?.setup_sql || setupSql)
       setMessage('Error: ' + (json?.error || 'Error sincronizando bracket'))
     }
   }
