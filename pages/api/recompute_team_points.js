@@ -71,12 +71,13 @@ export default async function handler(req, res) {
 
     const { data: redCards, error: eventError } = await supabase
       .from('match_events')
-      .select('team_id')
+      .select('team_id, match_id')
       .eq('event_type', 'red_card')
     if (eventError) throw eventError
 
+    const playedMatchIds = new Set((matches || []).filter((match) => match.played).map((match) => match.id))
     for (const event of redCards || []) {
-      if (scores[event.team_id]) scores[event.team_id].red_cards += 1
+      if (playedMatchIds.has(event.match_id) && scores[event.team_id]) scores[event.team_id].red_cards += 1
     }
 
     const qualification = calculateGroupQualification(matches || [])
@@ -99,6 +100,7 @@ export default async function handler(req, res) {
 
     for (const match of matches || []) {
       if (String(match.stage || '').startsWith('group_')) continue
+      if (!match.played) continue
 
       const reachedField = STAGE_REACHED_FIELD[match.stage]
       if (reachedField) {
@@ -106,7 +108,6 @@ export default async function handler(req, res) {
         if (scores[match.away_team_id]) scores[match.away_team_id][reachedField] = true
       }
 
-      if (!match.played) continue
       const winnerId = getMatchWinner(match)
       if (!winnerId || !scores[winnerId]) continue
 
