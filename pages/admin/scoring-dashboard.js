@@ -192,6 +192,7 @@ export default function ScoringDashboard() {
       setMatches((current) => current.map((match) => (match.id === id ? json.match : match)))
       setMessage('Partido actualizado.')
       await syncProgression(false)
+      if (json.match?.played) await recomputePoints(false)
     } else {
       setSetupSql(json?.setup_sql || setupSql)
       setMessage('Error: ' + (json?.error || 'Error actualizando partido'))
@@ -300,17 +301,19 @@ export default function ScoringDashboard() {
     }
   }
 
-  async function recomputePoints() {
-    setMessage('Recalculando puntos...')
+  async function recomputePoints(showMessage = true) {
+    if (showMessage) setMessage('Recalculando puntos...')
     const res = await adminFetch('/api/recompute_team_points', { method: 'POST' })
     const json = await res.json()
 
     if (json.ok) {
       if (json.schema_missing) setSetupSql(json.setup_sql || setupSql)
-      setMessage(json.schema_missing
-        ? `Puntos recalculados para ${json.computed} equipos sin bonus manuales. Aplica la migracion 004.`
-        : `Puntos recalculados para ${json.computed} equipos.`
-      )
+      if (showMessage) {
+        setMessage(json.schema_missing
+          ? `Puntos recalculados para ${json.computed} equipos sin bonus manuales. Aplica la migracion 004.`
+          : `Puntos recalculados para ${json.computed} equipos.`
+        )
+      }
       await loadAll()
     } else {
       setMessage(`Error: ${json.error}`)

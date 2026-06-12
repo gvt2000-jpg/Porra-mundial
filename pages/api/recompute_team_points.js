@@ -1,6 +1,6 @@
 import { supabase } from '../../lib/supabaseServer'
 import { requireAdmin } from '../../lib/adminAuth'
-import { calculateTeamPoints, emptyTeamScore } from '../../lib/scoring'
+import { applyPlayedMatchScore, calculateTeamPoints, emptyTeamScore, findKnockoutTiesMissingWinner, isGroupStage } from '../../lib/scoring'
 import { ACHIEVEMENT_COLUMNS_SQL, isMissingAchievementColumns } from '../../lib/schemaStatus'
 import { calculateGroupQualification } from '../../lib/groupQualification'
 import { getMatchWinner, syncTournamentProgression } from '../../lib/tournamentProgression'
@@ -47,26 +47,16 @@ export default async function handler(req, res) {
     if (refreshed.error) throw refreshed.error
     matches = refreshed.data || []
 
+    const tiesMissingWinner = findKnockoutTiesMissingWinner(matches)
+    if (tiesMissingWinner.length > 0) {
+      return res.status(400).json({
+        error: 'Hay eliminatorias jugadas y empatadas sin equipo clasificado por penaltis. Selecciona quien pasa antes de recalcular.',
+        pending_winner_match_ids: tiesMissingWinner.map((match) => match.id)
+      })
+    }
+
     for (const match of matches || []) {
-      if (!match.played) continue
-      const home = scores[match.home_team_id]
-      const away = scores[match.away_team_id]
-      if (!home || !away) continue
-
-      const homeScore = Number(match.home_score || 0)
-      const awayScore = Number(match.away_score || 0)
-
-      home.goals_for += homeScore
-      home.goals_against += awayScore
-      away.goals_for += awayScore
-      away.goals_against += homeScore
-
-      if (homeScore > awayScore) home.wins += 1
-      if (awayScore > homeScore) away.wins += 1
-      if (homeScore === awayScore) {
-        home.draws += 1
-        away.draws += 1
-      }
+      applyPlayedMatchScore(scores, match)
     }
 
     const { data: redCards, error: eventError } = await supabase
@@ -99,7 +89,7 @@ export default async function handler(req, res) {
     }
 
     for (const match of matches || []) {
-      if (String(match.stage || '').startsWith('group_')) continue
+      if (isGroupStage(match.stage)) continue
       if (!match.played) continue
 
       const reachedField = STAGE_REACHED_FIELD[match.stage]
