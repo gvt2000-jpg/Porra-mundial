@@ -1,18 +1,16 @@
 import { supabase } from '../../lib/supabaseServer'
 import { requireAdmin } from '../../lib/adminAuth'
-import { recomputeTeamPoints } from '../../lib/recomputeTeamPoints'
+import { syncApiFootballResults } from '../../lib/apiFootballSync'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
   if (!requireAdmin(req, res)) return
 
   try {
-    const result = await recomputeTeamPoints(supabase)
+    const result = await syncApiFootballResults(supabase)
     return res.status(200).json({ ok: true, ...result })
   } catch (err) {
-    return res.status(err.statusCode || 500).json({
-      error: err.message || String(err),
-      pending_winner_match_ids: err.pending_winner_match_ids
-    })
+    const status = err.missingApiKey ? 400 : 500
+    return res.status(status).json({ error: err.message || String(err) })
   }
 }

@@ -315,8 +315,10 @@ export default function ScoringDashboard() {
         )
       }
       await loadAll()
+      return true
     } else {
       setMessage(`Error: ${json.error}`)
+      return false
     }
   }
 
@@ -344,6 +346,23 @@ export default function ScoringDashboard() {
     } else {
       setMessage('Error: ' + (json?.error || 'Error al importar partidos'))
     }
+  }
+
+  async function importResultsAndRecompute() {
+    setMessage('Importando resultados y tarjetas...')
+    const res = await adminFetch('/api/import_api_football_results', { method: 'POST' })
+    const json = await res.json().catch(() => null)
+
+    if (!res.ok || json?.error) {
+      setMessage('Error: ' + (json?.error || 'Error importando resultados'))
+      return
+    }
+
+    if (json.schema_missing) setSetupSql(json.setup_sql || setupSql)
+    const recomputed = await recomputePoints(false)
+    if (!recomputed) return
+    const unmatched = json.unmatched?.length ? ` ${json.unmatched.length} partidos no se pudieron emparejar.` : ''
+    setMessage(`Importados ${json.matched} resultados y ${json.red_cards} rojas. Puntos recalculados.${unmatched}`)
   }
 
   async function resetAll() {
@@ -421,6 +440,7 @@ export default function ScoringDashboard() {
 
           <div style={toolbarStyle}>
             <button onClick={recomputePoints} style={primaryButtonStyle}>Recalcular puntos</button>
+            <button onClick={importResultsAndRecompute} style={primaryButtonStyle}>Importar resultados y recalcular</button>
             <button onClick={() => syncProgression(true)} style={quietButtonStyle}>Sincronizar bracket</button>
             <button onClick={importTeams} style={quietButtonStyle}>Importar equipos</button>
             <button onClick={importMatches} style={quietButtonStyle}>Importar partidos</button>

@@ -71,12 +71,14 @@ create table if not exists matches (
   bracket_order integer,
   home_source text,
   away_source text,
+  api_football_fixture_id integer,
   winner_team_id uuid references teams(id),
   created_at timestamptz default now()
 );
 
 create index if not exists idx_matches_stage on matches(stage);
 create unique index if not exists unique_matches_bracket_order on matches(bracket_order) where bracket_order is not null;
+create unique index if not exists unique_matches_api_football_fixture_id on matches(api_football_fixture_id) where api_football_fixture_id is not null;
 
 -- Match events (goals, cards, assists...)
 create table if not exists match_events (
