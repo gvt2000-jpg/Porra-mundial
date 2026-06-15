@@ -55,12 +55,40 @@ function sortByDate(a, b) {
   return new Date(a.starts_at || 0).getTime() - new Date(b.starts_at || 0).getTime()
 }
 
+function stageOrderValue(stage) {
+  const order = STAGE_ORDER.indexOf(stage)
+  return order === -1 ? Number.MAX_SAFE_INTEGER : order
+}
+
+function sortByStageThenDate(a, b) {
+  const orderDiff = stageOrderValue(a.stage || 'group') - stageOrderValue(b.stage || 'group')
+  if (orderDiff !== 0) return orderDiff
+  return sortByDate(a, b)
+}
+
+function matchDateKey(match) {
+  if (!match.starts_at) return 'Sin fecha'
+  return new Date(match.starts_at).toLocaleDateString('es-ES', {
+    weekday: 'short',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  })
+}
+
 export default function ScoringDashboard() {
   const [teams, setTeams] = useState([])
   const [matches, setMatches] = useState([])
   const [events, setEvents] = useState([])
   const [leaderboard, setLeaderboard] = useState([])
   const [form, setForm] = useState({ home_team_id: '', away_team_id: '', stage: 'group', starts_at: '' })
+  const [matchFilters, setMatchFilters] = useState({
+    orderBy: 'group',
+    status: 'all',
+    stage: 'all',
+    team: 'all',
+    redCards: 'all'
+  })
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
   const [setupSql, setSetupSql] = useState('')
@@ -80,22 +108,52 @@ export default function ScoringDashboard() {
     return grouped
   }, [events])
 
-  const groupedMatches = useMemo(() => {
-    const groups = {}
-    for (const match of [...matches].sort(sortByDate)) {
-      const key = match.stage || 'group'
-      if (!groups[key]) groups[key] = []
-      groups[key].push(match)
-    }
-    return Object.entries(groups).sort(([a], [b]) => {
-      const orderA = STAGE_ORDER.indexOf(a)
-      const orderB = STAGE_ORDER.indexOf(b)
-      if (orderA === -1 && orderB === -1) return a.localeCompare(b)
-      if (orderA === -1) return 1
-      if (orderB === -1) return -1
+  const stageOptions = useMemo(() => {
+    const stages = [...new Set(matches.map((match) => match.stage || 'group'))]
+    return stages.sort((a, b) => {
+      const orderA = stageOrderValue(a)
+      const orderB = stageOrderValue(b)
+      if (orderA === orderB) return stageLabel(a).localeCompare(stageLabel(b))
       return orderA - orderB
     })
   }, [matches])
+
+  const filteredMatches = useMemo(() => {
+    return matches.filter((match) => {
+      if (matchFilters.status === 'played' && !match.played) return false
+      if (matchFilters.status === 'pending' && match.played) return false
+      if (matchFilters.stage !== 'all' && (match.stage || 'group') !== matchFilters.stage) return false
+      if (matchFilters.team !== 'all' && match.home_team_id !== matchFilters.team && match.away_team_id !== matchFilters.team) return false
+
+      const redCardCount = (eventsByMatch[match.id] || []).filter((event) => event.event_type === 'red_card').length
+      if (matchFilters.redCards === 'with' && redCardCount === 0) return false
+      if (matchFilters.redCards === 'without' && redCardCount > 0) return false
+
+      return true
+    })
+  }, [eventsByMatch, matchFilters, matches])
+
+  const groupedMatches = useMemo(() => {
+    const groups = {}
+    const sortedMatches = [...filteredMatches].sort(matchFilters.orderBy === 'date' ? sortByDate : sortByStageThenDate)
+
+    for (const match of sortedMatches) {
+      const key = matchFilters.orderBy === 'date' ? matchDateKey(match) : match.stage || 'group'
+      if (!groups[key]) groups[key] = []
+      groups[key].push(match)
+    }
+
+    if (matchFilters.orderBy === 'date') {
+      return Object.entries(groups)
+    }
+
+    return Object.entries(groups).sort(([a], [b]) => {
+      const orderA = stageOrderValue(a)
+      const orderB = stageOrderValue(b)
+      if (orderA === orderB) return a.localeCompare(b)
+      return orderA - orderB
+    })
+  }, [filteredMatches, matchFilters.orderBy])
 
   async function loadAll() {
     setLoading(true)
@@ -411,6 +469,9 @@ export default function ScoringDashboard() {
   const messageStyle = { margin: '0 0 20px', padding: 14, borderRadius: 8, background: message.startsWith('Error') || message.includes('Falta') ? '#fee2e2' : '#dcfce7', color: message.startsWith('Error') || message.includes('Falta') ? '#991b1b' : '#166534', fontWeight: 650 }
   const inputStyle = { width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #d1d5db', fontSize: 14, fontFamily: 'inherit', background: '#fff' }
   const smallInputStyle = { ...inputStyle, width: 62, textAlign: 'center', padding: '8px 6px', fontWeight: 800 }
+  const filterGridStyle = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 12, alignItems: 'end', marginBottom: 16 }
+  const filterLabelStyle = { display: 'grid', gap: 6, color: '#374151', fontSize: 13, fontWeight: 800 }
+  const summaryPillStyle = { display: 'inline-flex', alignItems: 'center', minHeight: 36, padding: '6px 11px', borderRadius: 8, background: '#f9fafb', border: '1px solid #e5e7eb', color: '#374151', fontSize: 13, fontWeight: 800 }
   const tableStyle = { width: '100%', borderCollapse: 'collapse', background: '#fff' }
   const cellStyle = { padding: 12, textAlign: 'left', borderBottom: '1px solid #e5e7eb', verticalAlign: 'middle' }
   const headerCellStyle = { ...cellStyle, background: '#f9fafb', color: '#374151', fontSize: 13, fontWeight: 800 }
@@ -493,12 +554,68 @@ export default function ScoringDashboard() {
 
           <section style={sectionStyle}>
             <h2 style={sectionTitleStyle}>Partidos, goles y rojas</h2>
+            <div style={filterGridStyle}>
+              <label style={filterLabelStyle}>
+                Ordenar por
+                <select value={matchFilters.orderBy} onChange={(e) => setMatchFilters({ ...matchFilters, orderBy: e.target.value })} style={inputStyle}>
+                  <option value="group">Grupo / fase</option>
+                  <option value="date">Fecha</option>
+                </select>
+              </label>
+              <label style={filterLabelStyle}>
+                Estado
+                <select value={matchFilters.status} onChange={(e) => setMatchFilters({ ...matchFilters, status: e.target.value })} style={inputStyle}>
+                  <option value="all">Todos</option>
+                  <option value="played">Jugados</option>
+                  <option value="pending">No jugados</option>
+                </select>
+              </label>
+              <label style={filterLabelStyle}>
+                Grupo o fase
+                <select value={matchFilters.stage} onChange={(e) => setMatchFilters({ ...matchFilters, stage: e.target.value })} style={inputStyle}>
+                  <option value="all">Todos</option>
+                  {stageOptions.map((stage) => <option key={stage} value={stage}>{stageLabel(stage)}</option>)}
+                </select>
+              </label>
+              <label style={filterLabelStyle}>
+                Equipo
+                <select value={matchFilters.team} onChange={(e) => setMatchFilters({ ...matchFilters, team: e.target.value })} style={inputStyle}>
+                  <option value="all">Todos</option>
+                  {teams.map((team) => <option key={team.id} value={team.id}>{team.name}</option>)}
+                </select>
+              </label>
+              <label style={filterLabelStyle}>
+                Tarjetas rojas
+                <select value={matchFilters.redCards} onChange={(e) => setMatchFilters({ ...matchFilters, redCards: e.target.value })} style={inputStyle}>
+                  <option value="all">Todas</option>
+                  <option value="with">Con rojas</option>
+                  <option value="without">Sin rojas</option>
+                </select>
+              </label>
+              <button
+                type="button"
+                onClick={() => setMatchFilters({ orderBy: 'group', status: 'all', stage: 'all', team: 'all', redCards: 'all' })}
+                style={quietButtonStyle}
+              >
+                Limpiar filtros
+              </button>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+              <span style={summaryPillStyle}>{filteredMatches.length} de {matches.length} partidos</span>
+              <span style={summaryPillStyle}>{matches.filter((match) => match.played).length} jugados</span>
+              <span style={summaryPillStyle}>{matches.filter((match) => !match.played).length} no jugados</span>
+            </div>
             {matches.length === 0 ? (
               <p style={{ color: '#6b7280' }}>No hay partidos cargados.</p>
+            ) : filteredMatches.length === 0 ? (
+              <p style={{ color: '#6b7280' }}>No hay partidos que coincidan con esos filtros.</p>
             ) : (
               groupedMatches.map(([stage, stageMatches]) => (
                 <div key={stage} style={{ marginBottom: 24 }}>
-                  <h3 style={{ margin: '0 0 10px', fontSize: 18, color: '#1f2937' }}>{stageLabel(stage)}</h3>
+                  <h3 style={{ margin: '0 0 10px', fontSize: 18, color: '#1f2937' }}>
+                    {matchFilters.orderBy === 'date' ? stage : stageLabel(stage)}
+                    <span style={{ marginLeft: 8, color: '#6b7280', fontSize: 13, fontWeight: 800 }}>({stageMatches.length})</span>
+                  </h3>
                   <div style={{ overflowX: 'auto', border: '1px solid #e5e7eb', borderRadius: 8 }}>
                     <table style={tableStyle}>
                       <thead>
