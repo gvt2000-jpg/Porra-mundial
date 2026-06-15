@@ -399,7 +399,7 @@ export default function ScoringDashboard() {
     const json = await res.json()
 
     if (res.ok) {
-      setMessage(`Importados ${json.imported} partidos.`)
+      setMessage(`Partidos actualizados: ${json.updated || 0} fechas corregidas, ${json.imported || 0} nuevos.`)
       await Promise.all([loadTeams(), loadMatches()])
     } else {
       setMessage('Error: ' + (json?.error || 'Error al importar partidos'))

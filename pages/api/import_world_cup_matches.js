@@ -11,7 +11,6 @@ export default async function handler(req, res) {
   if (teamError) return res.status(500).json({ error: teamError.message })
 
   const teamByName = Object.fromEntries((teams || []).map((team) => [team.name, team.id]))
-  await supabase.from('matches').delete().like('stage', 'group_%')
 
   const matches = getWorldCupGroupMatches().map((match) => ({
     home_team_id: teamByName[match.home_team_name],
@@ -24,7 +23,35 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'No todos los equipos están disponibles para crear partidos' })
   }
 
-  const { error } = await supabase.from('matches').insert(matches)
-  if (error) return res.status(500).json({ error: error.message })
-  return res.status(200).json({ imported: matches.length })
+  const { data: existingMatches, error: matchesError } = await supabase
+    .from('matches')
+    .select('id,home_team_id,away_team_id,stage')
+    .like('stage', 'group_%')
+  if (matchesError) return res.status(500).json({ error: matchesError.message })
+
+  const existingByFixture = new Map((existingMatches || []).map((match) => [
+    `${match.stage}:${match.home_team_id}:${match.away_team_id}`,
+    match
+  ]))
+
+  let imported = 0
+  let updated = 0
+
+  for (const match of matches) {
+    const existing = existingByFixture.get(`${match.stage}:${match.home_team_id}:${match.away_team_id}`)
+    if (existing) {
+      const { error } = await supabase
+        .from('matches')
+        .update({ starts_at: match.starts_at })
+        .eq('id', existing.id)
+      if (error) return res.status(500).json({ error: error.message })
+      updated += 1
+    } else {
+      const { error } = await supabase.from('matches').insert([match])
+      if (error) return res.status(500).json({ error: error.message })
+      imported += 1
+    }
+  }
+
+  return res.status(200).json({ imported, updated, total: matches.length })
 }
