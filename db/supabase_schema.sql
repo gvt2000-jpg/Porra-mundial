@@ -117,6 +117,17 @@ create table if not exists team_points (
   last_updated timestamptz default now()
 );
 
+-- Snapshots of the participant leaderboard after each recompute
+create table if not exists leaderboard_snapshots (
+  id uuid primary key default gen_random_uuid(),
+  source text default 'recompute',
+  rows jsonb not null,
+  created_at timestamptz default now()
+);
+
+create index if not exists idx_leaderboard_snapshots_created_at
+on leaderboard_snapshots(created_at desc);
+
 -- Optional: view showing picks with multipliers (for convenience)
 create or replace view picks_with_team as
 select p.id, p.user_id, p.team_id, t.name as team_name, p.rank, p.multiplier, p.created_at

@@ -39,6 +39,10 @@ export default async function handler(req, res) {
     // Reset team points
     await supabase.from('team_points').delete().gte('team_id', '00000000-0000-0000-0000-000000000000')
 
+    // Reset leaderboard history if the optional snapshots table exists.
+    const snapshotReset = await supabase.from('leaderboard_snapshots').delete().gte('id', '00000000-0000-0000-0000-000000000000')
+    if (snapshotReset.error && snapshotReset.error.code !== '42P01') throw snapshotReset.error
+
     return res.status(200).json({ ok: true, reset_teams: teams.length, message: 'System reset to initial state' })
   } catch (err) {
     return res.status(500).json({ error: err.message || String(err) })

@@ -1,6 +1,7 @@
 import { supabase } from '../../lib/supabaseServer'
 import { getTeamFlag } from '../../lib/teamMeta'
 import { worldCupGroups2026 } from '../../lib/worldcupData'
+import { calculateGroupQualification } from '../../lib/groupQualification'
 import { KNOCKOUT_STAGES, buildVirtualBracket } from '../../lib/tournamentProgression'
 
 const GROUP_LABELS = Array.from({ length: 12 }, (_, i) => String.fromCharCode(65 + i))
@@ -126,7 +127,7 @@ export default async function handler(req, res) {
     const [{ data: teams, error: teamsError }, { data: matches, error: matchesError }, { data: events, error: eventsError }, { data: teamPoints, error: pointsError }] = await Promise.all([
       supabase.from('teams').select('id,name,passed_group,group_finish_position,phases_advanced,finalist,third_place,champion').order('name'),
       supabase.from('matches').select('*').order('starts_at'),
-      supabase.from('match_events').select('team_id,event_type'),
+      supabase.from('match_events').select('team_id,match_id,event_type'),
       supabase.from('team_points').select('team_id,points')
     ])
 
@@ -155,6 +156,10 @@ export default async function handler(req, res) {
       stats.goal_diff = stats.goals_for - stats.goals_against
     }
 
+    const playedMatchIds = new Set((matches || []).filter((match) => match.played).map((match) => match.id))
+    const playedEvents = (events || []).filter((event) => !event.match_id || playedMatchIds.has(event.match_id))
+    const qualification = calculateGroupQualification(matches || [], { events: playedEvents })
+
     const groupMap = Object.fromEntries(GROUP_LABELS.map((label) => [label, { label, teamIds: new Set(), matches: [] }]))
     for (const match of matches || []) {
       const groupName = getGroupName(match.stage)
@@ -164,17 +169,21 @@ export default async function handler(req, res) {
       groupMap[groupName].matches.push(formatMatch(match, teamsById))
     }
 
-    let groups = Object.values(groupMap).map((group) => ({
-      label: group.label,
-      teams: sortStandings([...group.teamIds].map((id) => statsByTeamId[id]).filter(Boolean)),
-      matches: group.matches
-    }))
+    let groups = Object.values(groupMap).map((group) => {
+      const table = qualification.groups?.[group.label]?.table || []
+      const orderedTeamIds = table.length > 0 ? table.map((standing) => standing.team_id) : [...group.teamIds]
+      return {
+        label: group.label,
+        teams: orderedTeamIds.map((id) => statsByTeamId[id]).filter(Boolean),
+        matches: group.matches
+      }
+    })
 
     if (groups.every((group) => group.teams.length === 0)) {
       groups = buildFallbackGroups(teamsByName, statsByTeamId)
     }
 
-    const virtualBracket = buildVirtualBracket(matches || [])
+    const virtualBracket = buildVirtualBracket(matches || [], { events: playedEvents })
     const bracket = KNOCKOUT_STAGES.map((stage) => ({
       ...stage,
       matches: virtualBracket
