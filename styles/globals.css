@@ -442,6 +442,7 @@ select {
 }
 
 .podium-rank {
+  position: relative;
   width: fit-content;
   padding: 7px 10px;
   color: #fff;
@@ -500,6 +501,7 @@ select {
 }
 
 .rank-badge {
+  position: relative;
   min-width: 42px;
   height: 42px;
   display: grid;
@@ -508,6 +510,43 @@ select {
   background: linear-gradient(135deg, var(--brand), var(--accent));
   border-radius: 8px;
   font-weight: 950;
+}
+
+.rank-change-mini {
+  position: absolute;
+  right: -9px;
+  bottom: -8px;
+  min-width: 24px;
+  min-height: 20px;
+  display: inline-grid;
+  place-items: center;
+  padding: 2px 5px;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.rank-change-mini.is-up {
+  color: #166534;
+  background: #bbf7d0;
+}
+
+.rank-change-mini.is-down {
+  color: #991b1b;
+  background: #fecaca;
+}
+
+.rank-change-mini.is-flat {
+  color: #334155;
+  background: #e2e8f0;
+}
+
+.rank-change-mini.is-new {
+  color: #075985;
+  background: #bae6fd;
 }
 
 .score {
@@ -577,6 +616,26 @@ select {
   height: 100%;
   background: linear-gradient(90deg, var(--accent), #f59e0b);
   border-radius: inherit;
+}
+
+.team-status-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.team-status-pill.is-live {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.team-status-pill.is-out {
+  color: #991b1b;
+  background: #fee2e2;
 }
 
 .table-wrap {

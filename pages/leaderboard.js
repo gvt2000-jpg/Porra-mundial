@@ -20,6 +20,13 @@ function formatDeltaPoints(delta) {
   return `${delta > 0 ? '+' : ''}${delta.toFixed(1)} pts`
 }
 
+function compactRankDelta(delta) {
+  if (delta === null || delta === undefined) return 'new'
+  if (delta > 0) return `+${delta}`
+  if (delta < 0) return String(delta)
+  return '0'
+}
+
 export default function Leaderboard() {
   const [data, setData] = useState(null)
   const [updatedAt, setUpdatedAt] = useState(null)
@@ -77,7 +84,7 @@ export default function Leaderboard() {
               <div className="podium-strip">
                 {podium.map((row, index) => (
                   <a key={row.submitter} className={`podium-card podium-${index + 1}`} href={`/participant/${encodeURIComponent(row.submitter)}`}>
-                    <span className="podium-rank">#{row.rank}</span>
+                    <span className="podium-rank">#{row.rank}<em className={`rank-change-mini ${movementClass(row.rankDelta)}`}>{compactRankDelta(row.rankDelta)}</em></span>
                     <strong>{row.submitter}</strong>
                     <span>{row.total.toFixed(1)} pts</span>
                     <em className={`movement-pill ${movementClass(row.rankDelta)}`}>{movementLabel(row.rankDelta)}</em>
@@ -115,11 +122,13 @@ export default function Leaderboard() {
               {data.map((row, i) => (
                 <article key={row.submitter} className={`ranking-card ${i < 3 ? 'ranking-card-featured' : ''}`}>
                   <div className="ranking-head">
-                    <span className="rank-badge">#{row.rank}</span>
+                    <span className="rank-badge">#{row.rank}<em className={`rank-change-mini ${movementClass(row.rankDelta)}`}>{compactRankDelta(row.rankDelta)}</em></span>
                     <div>
                       <strong style={{ fontSize: 19 }}>{row.submitter}</strong>
                       <div className="ranking-meta">
-                        <span>{row.breakdown.length} equipos puntuando</span>
+                        <span>{row.active_teams ?? row.breakdown.length} vivos</span>
+                        <span>{row.eliminated_teams ?? 0} fuera</span>
+                        <span>{row.scoring_teams ?? 0} con puntos</span>
                         <span className={`movement-pill ${movementClass(row.rankDelta)}`}>{movementLabel(row.rankDelta)}</span>
                         <span className="points-delta">{formatDeltaPoints(row.pointsDelta)}</span>
                       </div>
@@ -139,13 +148,14 @@ export default function Leaderboard() {
                     <div className="table-wrap" style={{ marginTop: 12 }}>
                       <table className="data-table">
                         <thead>
-                          <tr><th>Equipo</th><th>Rank</th><th>Mult</th><th>Puntos</th></tr>
+                          <tr><th>Equipo</th><th>Rank</th><th>Estado</th><th>Mult</th><th>Puntos</th></tr>
                         </thead>
                         <tbody>
                           {row.breakdown.map((pick) => (
                             <tr key={pick.team_id}>
                               <td>{pick.flag} {pick.team_name || 'Desconocido'}</td>
                               <td>#{pick.rank}</td>
+                              <td><span className={`team-status-pill ${pick.eliminated ? 'is-out' : 'is-live'}`}>{pick.eliminated ? 'Fuera' : 'Vivo'}</span></td>
                               <td>x{pick.multiplier}</td>
                               <td><strong style={{ color: 'var(--accent)' }}>+{pick.contributed.toFixed(1)}</strong></td>
                             </tr>
