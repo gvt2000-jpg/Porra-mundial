@@ -1,0 +1,11 @@
+
+> porras-mundial@0.1.0 dev
+> next dev -p 3000
+
+  ▲ Next.js 13.5.5
+  - Local:        http://localhost:3000
+
+ ✓ Ready in 1862ms
+ ✓ Compiled /leaderboard in 1888ms (196 modules)
+ ✓ Compiled in 91ms (192 modules)
+ ✓ Compiled in 239ms (192 modules)
