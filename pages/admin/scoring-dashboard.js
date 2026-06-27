@@ -505,7 +505,7 @@ export default function ScoringDashboard() {
             <button onClick={() => syncProgression(true)} style={quietButtonStyle}>Sincronizar bracket</button>
             <button onClick={importTeams} style={quietButtonStyle}>Importar equipos</button>
             <button onClick={importMatches} style={quietButtonStyle}>Importar partidos</button>
-            <button onClick={loadAll} style={quietButtonStyle}>Refrescar</button>
+            <button onClick={loadAll} style={quietButtonStyle}>Refrescar panel</button>
             <button onClick={resetAll} style={dangerButtonStyle}>Resetear todo</button>
           </div>
 
