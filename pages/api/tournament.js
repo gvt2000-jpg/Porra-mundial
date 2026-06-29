@@ -99,7 +99,17 @@ function formatMatch(match, teamsById) {
 }
 
 function formatBracketSlot(slot, teamsById) {
-  if (slot.match) return formatMatch(slot.match, teamsById)
+  if (slot.match) {
+    return formatMatch({
+      ...slot.match,
+      stage: slot.stage,
+      bracket_order: slot.order,
+      home_source: slot.home,
+      away_source: slot.away,
+      home_team_id: slot.home_team_id,
+      away_team_id: slot.away_team_id
+    }, teamsById)
+  }
 
   const home = teamsById[slot.home_team_id]
   const away = teamsById[slot.away_team_id]

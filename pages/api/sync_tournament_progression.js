@@ -8,7 +8,10 @@ export default async function handler(req, res) {
   if (!requireAdmin(req, res)) return
 
   try {
-    const { data: matches, error } = await supabase.from('matches').select('*').order('starts_at')
+    const [{ data: matches, error }, { data: events, error: eventsError }] = await Promise.all([
+      supabase.from('matches').select('*').order('starts_at'),
+      supabase.from('match_events').select('team_id,match_id,event_type')
+    ])
     if (error && isMissingMatchProgressionColumns(error)) {
       return res.status(400).json({
         error: 'Faltan columnas de bracket en matches. Ejecuta la migracion 005_add_knockout_progression_columns.sql en Supabase.',
@@ -17,8 +20,11 @@ export default async function handler(req, res) {
       })
     }
     if (error) throw error
+    if (eventsError) throw eventsError
 
-    const result = await syncTournamentProgression(supabase, matches || [])
+    const playedMatchIds = new Set((matches || []).filter((match) => match.played).map((match) => match.id))
+    const playedEvents = (events || []).filter((event) => !event.match_id || playedMatchIds.has(event.match_id))
+    const result = await syncTournamentProgression(supabase, matches || [], { events: playedEvents })
     return res.status(200).json({
       ok: true,
       created: result.created.length,
