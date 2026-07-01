@@ -47,6 +47,15 @@ const STAGE_ORDER = [
   'final'
 ]
 
+const KNOCKOUT_STAGES = [
+  'round_of_32',
+  'round_of_16',
+  'quarter_final',
+  'semi_final',
+  'third_place',
+  'final'
+]
+
 function stageLabel(stage) {
   return STAGE_LABELS[stage] || stage || 'Sin fase'
 }
@@ -74,6 +83,12 @@ function matchDateKey(match) {
     month: 'short',
     year: 'numeric'
   })
+}
+
+function groupedByDateKey(match) {
+  const stage = match.stage || 'group'
+  if (!KNOCKOUT_STAGES.includes(stage)) return matchDateKey(match)
+  return `${matchDateKey(match)} · ${stageLabel(stage)}`
 }
 
 export default function ScoringDashboard() {
@@ -138,7 +153,7 @@ export default function ScoringDashboard() {
     const sortedMatches = [...filteredMatches].sort(matchFilters.orderBy === 'date' ? sortByDate : sortByStageThenDate)
 
     for (const match of sortedMatches) {
-      const key = matchFilters.orderBy === 'date' ? matchDateKey(match) : match.stage || 'group'
+      const key = matchFilters.orderBy === 'date' ? groupedByDateKey(match) : match.stage || 'group'
       if (!groups[key]) groups[key] = []
       groups[key].push(match)
     }
@@ -154,6 +169,15 @@ export default function ScoringDashboard() {
       return orderA - orderB
     })
   }, [filteredMatches, matchFilters.orderBy])
+
+  const pendingKnockoutCounts = useMemo(() => {
+    const counts = Object.fromEntries(KNOCKOUT_STAGES.map((stage) => [stage, 0]))
+    for (const match of matches) {
+      const stage = match.stage || 'group'
+      if (!match.played && counts[stage] !== undefined) counts[stage] += 1
+    }
+    return counts
+  }, [matches])
 
   async function loadAll() {
     setLoading(true)
@@ -604,6 +628,22 @@ export default function ScoringDashboard() {
               <span style={summaryPillStyle}>{filteredMatches.length} de {matches.length} partidos</span>
               <span style={summaryPillStyle}>{matches.filter((match) => match.played).length} jugados</span>
               <span style={summaryPillStyle}>{matches.filter((match) => !match.played).length} no jugados</span>
+              {KNOCKOUT_STAGES.map((stage) => (
+                <button
+                  key={stage}
+                  type="button"
+                  onClick={() => setMatchFilters({ ...matchFilters, status: 'pending', stage })}
+                  style={{
+                    ...summaryPillStyle,
+                    cursor: 'pointer',
+                    background: matchFilters.status === 'pending' && matchFilters.stage === stage ? '#dbeafe' : summaryPillStyle.background,
+                    borderColor: matchFilters.status === 'pending' && matchFilters.stage === stage ? '#93c5fd' : summaryPillStyle.borderColor,
+                    color: matchFilters.status === 'pending' && matchFilters.stage === stage ? '#1d4ed8' : summaryPillStyle.color
+                  }}
+                >
+                  {stageLabel(stage)} pendientes: {pendingKnockoutCounts[stage]}
+                </button>
+              ))}
             </div>
             {matches.length === 0 ? (
               <p style={{ color: '#6b7280' }}>No hay partidos cargados.</p>
@@ -621,6 +661,7 @@ export default function ScoringDashboard() {
                       <thead>
                         <tr>
                           <th style={headerCellStyle}>Fecha</th>
+                          <th style={headerCellStyle}>Fase</th>
                           <th style={headerCellStyle}>Local</th>
                           <th style={headerCellStyle}>Marcador</th>
                           <th style={headerCellStyle}>Visitante</th>
@@ -640,6 +681,20 @@ export default function ScoringDashboard() {
                           return (
                             <tr key={match.id}>
                               <td style={cellStyle}>{match.starts_at ? new Date(match.starts_at).toLocaleString('es-ES') : 'Sin fecha'}</td>
+                              <td style={cellStyle}>
+                                <span style={{
+                                  display: 'inline-flex',
+                                  padding: '5px 8px',
+                                  borderRadius: 8,
+                                  background: KNOCKOUT_STAGES.includes(match.stage) ? '#eef2ff' : '#f3f4f6',
+                                  color: KNOCKOUT_STAGES.includes(match.stage) ? '#3730a3' : '#374151',
+                                  fontSize: 12,
+                                  fontWeight: 850,
+                                  whiteSpace: 'nowrap'
+                                }}>
+                                  {stageLabel(match.stage || 'group')}
+                                </span>
+                              </td>
                               <td style={cellStyle}><strong>{home?.name || 'Local'}</strong></td>
                               <td style={cellStyle}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
