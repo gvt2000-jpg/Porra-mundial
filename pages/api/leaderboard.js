@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end()
 
   try {
-    const [{ leaderboard, updatedAt }, snapshotResult] = await Promise.all([
+    const [{ leaderboard, updatedAt, pendingScoringStage }, snapshotResult] = await Promise.all([
       buildLeaderboard(supabase),
       latestLeaderboardSnapshots(supabase)
     ])
@@ -39,6 +39,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       leaderboard: leaderboardWithMovement,
       updated_at: updatedAt,
+      pending_scoring_stage: pendingScoringStage,
       movement_reference_at: referenceSnapshot?.created_at || null,
       current_snapshot_at: latestSnapshot?.created_at || null,
       snapshot_schema_missing: snapshotResult.schemaMissing,

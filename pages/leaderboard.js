@@ -31,6 +31,7 @@ export default function Leaderboard() {
   const [data, setData] = useState(null)
   const [updatedAt, setUpdatedAt] = useState(null)
   const [referenceAt, setReferenceAt] = useState(null)
+  const [pendingScoringStage, setPendingScoringStage] = useState(null)
   const [snapshotMissing, setSnapshotMissing] = useState(false)
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export default function Leaderboard() {
       setData(j.leaderboard || [])
       setUpdatedAt(j.updated_at || null)
       setReferenceAt(j.movement_reference_at || null)
+      setPendingScoringStage(j.pending_scoring_stage || null)
       setSnapshotMissing(Boolean(j.snapshot_schema_missing))
     })
   }, [])
@@ -115,6 +117,10 @@ export default function Leaderboard() {
                   <span>Ultimo recalculo</span>
                   <strong>{updatedAt ? new Date(updatedAt).toLocaleDateString('es-ES') : '-'}</strong>
                 </div>
+                <div className="stat-tile">
+                  <span>Fase pendiente</span>
+                  <strong>{pendingScoringStage?.label || '-'}</strong>
+                </div>
               </div>
             </section>
 
@@ -129,6 +135,7 @@ export default function Leaderboard() {
                         <span>{row.active_teams ?? row.breakdown.length} vivos</span>
                         <span>{row.eliminated_teams ?? 0} fuera</span>
                         <span>{row.scoring_teams ?? 0} con puntos</span>
+                        <span>{row.pending_scoring_teams ?? 0} pendientes{pendingScoringStage?.label ? ` en ${pendingScoringStage.label}` : ''}</span>
                         <span className={`movement-pill ${movementClass(row.rankDelta)}`}>{movementLabel(row.rankDelta)}</span>
                         <span className="points-delta">{formatDeltaPoints(row.pointsDelta)}</span>
                       </div>
@@ -148,7 +155,7 @@ export default function Leaderboard() {
                     <div className="table-wrap" style={{ marginTop: 12 }}>
                       <table className="data-table">
                         <thead>
-                          <tr><th>Equipo</th><th>Rank</th><th>Estado</th><th>Mult</th><th>Puntos</th></tr>
+                          <tr><th>Equipo</th><th>Rank</th><th>Estado</th><th>Pendiente</th><th>Mult</th><th>Puntos</th></tr>
                         </thead>
                         <tbody>
                           {row.breakdown.map((pick) => (
@@ -156,6 +163,7 @@ export default function Leaderboard() {
                               <td>{pick.flag} {pick.team_name || 'Desconocido'}</td>
                               <td>#{pick.rank}</td>
                               <td><span className={`team-status-pill ${pick.eliminated ? 'is-out' : 'is-live'}`}>{pick.eliminated ? 'Fuera' : 'Vivo'}</span></td>
+                              <td>{pick.pending_current_stage ? pendingScoringStage?.label || 'Si' : '-'}</td>
                               <td>x{pick.multiplier}</td>
                               <td><strong style={{ color: 'var(--accent)' }}>+{pick.contributed.toFixed(1)}</strong></td>
                             </tr>
