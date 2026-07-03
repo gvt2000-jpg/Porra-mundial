@@ -5,6 +5,16 @@ function formatPoints(value) {
   return Math.round(Number(value || 0))
 }
 
+function differentialText(pick, submitter, pendingScoringStage) {
+  if (pick.eliminated) {
+    return `Ya esta eliminado: mantiene ${formatPoints(pick.contributed)} pts, pero no puede sumar mas.`
+  }
+  if (pick.pending_current_stage) {
+    return `Puede recortar en ${pendingScoringStage?.label || 'la fase actual'}: x${pick.multiplier} para ${submitter}.`
+  }
+  return `Sigue vivo y puede recortar si suma puntos: x${pick.multiplier} para ${submitter}.`
+}
+
 export default function ParticipantDetail() {
   const router = useRouter()
   const name = typeof router.query.name === 'string' ? decodeURIComponent(router.query.name) : ''
@@ -100,7 +110,10 @@ export default function ParticipantDetail() {
           {differential.map((pick) => (
             <div key={pick.team_id} style={{ padding: '10px 0', borderBottom: '1px solid #eef2f7' }}>
               <strong>{pick.flag} {pick.team_name}</strong>
-              <div className="muted">Puede recortar si suma puntos: x{pick.multiplier} para {current.submitter}.</div>
+              <span className={`team-status-pill ${pick.eliminated ? 'is-out' : 'is-live'}`} style={{ marginLeft: 8 }}>
+                {pick.eliminated ? 'Fuera' : 'Vivo'}
+              </span>
+              <div className="muted">{differentialText(pick, current.submitter, pendingScoringStage)}</div>
             </div>
           ))}
         </section>
