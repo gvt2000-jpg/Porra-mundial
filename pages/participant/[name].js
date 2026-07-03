@@ -1,13 +1,21 @@
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 
+function formatPoints(value) {
+  return Math.round(Number(value || 0))
+}
+
 export default function ParticipantDetail() {
   const router = useRouter()
   const name = typeof router.query.name === 'string' ? decodeURIComponent(router.query.name) : ''
   const [leaderboard, setLeaderboard] = useState(null)
+  const [pendingScoringStage, setPendingScoringStage] = useState(null)
 
   useEffect(() => {
-    fetch('/api/leaderboard').then((r) => r.json()).then((j) => setLeaderboard(j.leaderboard || []))
+    fetch('/api/leaderboard').then((r) => r.json()).then((j) => {
+      setLeaderboard(j.leaderboard || [])
+      setPendingScoringStage(j.pending_scoring_stage || null)
+    })
   }, [])
 
   const current = useMemo(() => leaderboard?.find((row) => row.submitter === name), [leaderboard, name])
@@ -46,14 +54,16 @@ export default function ParticipantDetail() {
         <header style={{ marginBottom: 20 }}>
           <p className="eyebrow" style={{ color: 'var(--brand)' }}>Participante</p>
           <h1 className="page-title">{current.submitter}</h1>
-          <p className="page-copy">Detalle de predicción, multiplicadores y distancia con la cabeza.</p>
+          <p className="page-copy">Detalle de prediccion, equipos vivos, multiplicadores y distancia con la cabeza.</p>
         </header>
 
         <section className="stat-grid" style={{ marginBottom: 16 }}>
-          <div className="stat"><div className="stat-label">Posición</div><div className="stat-value">#{current.rank}</div></div>
-          <div className="stat"><div className="stat-label">Total</div><div className="stat-value" style={{ color: 'var(--accent)' }}>{current.total.toFixed(1)}</div></div>
-          <div className="stat"><div className="stat-label">Al líder</div><div className="stat-value">{leader ? (leader.total - current.total).toFixed(1) : '0.0'}</div></div>
-          <div className="stat"><div className="stat-label">Siguiente objetivo</div><div className="stat-value">{previous ? (previous.total - current.total).toFixed(1) : '0.0'}</div></div>
+          <div className="stat"><div className="stat-label">Posicion</div><div className="stat-value">#{current.rank}</div></div>
+          <div className="stat"><div className="stat-label">Total</div><div className="stat-value" style={{ color: 'var(--accent)' }}>{formatPoints(current.total)}</div></div>
+          <div className="stat"><div className="stat-label">Al lider</div><div className="stat-value">{leader ? formatPoints(leader.total - current.total) : 0}</div></div>
+          <div className="stat"><div className="stat-label">Siguiente objetivo</div><div className="stat-value">{previous ? formatPoints(previous.total - current.total) : 0}</div></div>
+          <div className="stat"><div className="stat-label">Vivos</div><div className="stat-value">{current.active_teams ?? current.breakdown.filter((pick) => !pick.eliminated).length}</div></div>
+          <div className="stat"><div className="stat-label">Fuera</div><div className="stat-value">{current.eliminated_teams ?? current.breakdown.filter((pick) => pick.eliminated).length}</div></div>
         </section>
 
         <section className="panel" style={{ marginBottom: 16 }}>
@@ -64,16 +74,18 @@ export default function ParticipantDetail() {
           <div className="table-wrap">
             <table className="data-table">
               <thead>
-                <tr><th>Rank</th><th>Equipo</th><th>Mult</th><th>Equipo pts</th><th>Aporta</th></tr>
+                <tr><th>Rank</th><th>Equipo</th><th>Estado</th><th>Pendiente</th><th>Mult</th><th>Equipo pts</th><th>Aporta</th></tr>
               </thead>
               <tbody>
                 {current.breakdown.map((pick) => (
                   <tr key={pick.team_id}>
                     <td><strong>#{pick.rank}</strong></td>
                     <td>{pick.flag} {pick.team_name}</td>
+                    <td><span className={`team-status-pill ${pick.eliminated ? 'is-out' : 'is-live'}`}>{pick.eliminated ? 'Fuera' : 'Vivo'}</span></td>
+                    <td>{pick.pending_current_stage ? pendingScoringStage?.label || 'Si' : '-'}</td>
                     <td>x{pick.multiplier}</td>
-                    <td>{pick.team_points}</td>
-                    <td><strong style={{ color: 'var(--accent)' }}>{pick.contributed.toFixed(1)}</strong></td>
+                    <td>{formatPoints(pick.team_points)}</td>
+                    <td><strong style={{ color: 'var(--accent)' }}>{formatPoints(pick.contributed)}</strong></td>
                   </tr>
                 ))}
               </tbody>
@@ -82,9 +94,9 @@ export default function ParticipantDetail() {
         </section>
 
         <section className="panel">
-          <h2>Diferenciales contra el líder</h2>
+          <h2>Diferenciales contra el lider</h2>
           {current.rank === 1 && <p className="muted">Este participante lidera la porra.</p>}
-          {current.rank !== 1 && differential.length === 0 && <p className="muted">No tiene equipos diferenciales contra el líder.</p>}
+          {current.rank !== 1 && differential.length === 0 && <p className="muted">No tiene equipos diferenciales contra el lider.</p>}
           {differential.map((pick) => (
             <div key={pick.team_id} style={{ padding: '10px 0', borderBottom: '1px solid #eef2f7' }}>
               <strong>{pick.flag} {pick.team_name}</strong>

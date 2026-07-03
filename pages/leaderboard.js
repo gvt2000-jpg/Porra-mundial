@@ -16,8 +16,13 @@ function movementClass(delta) {
 
 function formatDeltaPoints(delta) {
   if (delta === null || delta === undefined) return 'Primera lectura'
-  if (Math.abs(delta) < 0.05) return '0.0 pts'
-  return `${delta > 0 ? '+' : ''}${delta.toFixed(1)} pts`
+  const rounded = Math.round(Number(delta || 0))
+  if (rounded === 0) return '0 pts'
+  return `${rounded > 0 ? '+' : ''}${rounded} pts`
+}
+
+function formatPoints(value) {
+  return Math.round(Number(value || 0))
 }
 
 function compactRankDelta(delta) {
@@ -88,7 +93,7 @@ export default function Leaderboard() {
                   <a key={row.submitter} className={`podium-card podium-${index + 1}`} href={`/participant/${encodeURIComponent(row.submitter)}`}>
                     <span className="podium-rank">#{row.rank}<em className={`rank-change-mini ${movementClass(row.rankDelta)}`}>{compactRankDelta(row.rankDelta)}</em></span>
                     <strong>{row.submitter}</strong>
-                    <span>{row.total.toFixed(1)} pts</span>
+                    <span>{formatPoints(row.total)} pts</span>
                     <em className={`movement-pill ${movementClass(row.rankDelta)}`}>{movementLabel(row.rankDelta)}</em>
                   </a>
                 ))}
@@ -97,7 +102,7 @@ export default function Leaderboard() {
               <div className="leaderboard-stats">
                 <div className="stat-tile">
                   <span>Distancia al 2o</span>
-                  <strong>{leaderGap.toFixed(1)} pts</strong>
+                  <strong>{formatPoints(leaderGap)} pts</strong>
                 </div>
                 <div className="stat-tile">
                   <span>Mayor subida</span>
@@ -141,7 +146,7 @@ export default function Leaderboard() {
                       </div>
                     </div>
                     <div>
-                      <div className="score">{row.total.toFixed(1)} pts</div>
+                      <div className="score">{formatPoints(row.total)} pts</div>
                       <a className="ghost-link" href={`/participant/${encodeURIComponent(row.submitter)}`}>Ver detalle</a>
                     </div>
                   </div>
@@ -165,7 +170,7 @@ export default function Leaderboard() {
                               <td><span className={`team-status-pill ${pick.eliminated ? 'is-out' : 'is-live'}`}>{pick.eliminated ? 'Fuera' : 'Vivo'}</span></td>
                               <td>{pick.pending_current_stage ? pendingScoringStage?.label || 'Si' : '-'}</td>
                               <td>x{pick.multiplier}</td>
-                              <td><strong style={{ color: 'var(--accent)' }}>+{pick.contributed.toFixed(1)}</strong></td>
+                              <td><strong style={{ color: 'var(--accent)' }}>+{formatPoints(pick.contributed)}</strong></td>
                             </tr>
                           ))}
                         </tbody>
